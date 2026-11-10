@@ -131,3 +131,61 @@ export const SMALL_TALK = [
   { en: 'I love the color blue!', pt: 'Eu amo a cor azul!' },
   { en: 'One, two, three... hello!', pt: 'Um, dois, três... olá!' },
 ];
+
+// ---------- Vozes e falas ----------
+// Vozes neurais Kokoro (geradas no PC por tools/gerar-audio.mjs). Cada personagem tem a sua.
+export const VOICES = {
+  narrator: 'af_heart', // palavras das lições, minijogo, loja
+  greet: 'af_bella', colors: 'am_michael', numbers: 'am_fenrir', fruits: 'af_sarah',
+  arena: 'am_puck', bakery: 'bf_emma', shop: 'af_aoede',
+  Bolt: 'am_puck', Pom: 'af_bella', Nugget: 'am_michael',
+};
+
+// Pedidos da padaria: 5 frutas x 1 a 4 unidades
+export const ORDER_KINDS = Object.keys(FRUIT_ITEMS);
+export const ORDER_MAX = 4;
+export function orderPhrase(o) { const f = FRUIT_ITEMS[o.kind]; return `${NUM_WORDS[o.n]} ${o.n === 1 ? f.en : f.plural}`; }
+const cap = s => s[0].toUpperCase() + s.slice(1);
+
+// Falas em inglês dos bichinhos ({n} = nome do jogador; não é falado no áudio)
+export const LINES = {
+  hi: n => `Hi, ${n}!`,
+  gate1: 'The Forest is closed... for now!',
+  gate2: 'A new area is coming soon!',
+  teacherLocked: 'Hello! Come back later, please.',
+  teacherReplay: (n, l) => `Hello again, ${n}! Do you want to practice ${l.title.en.toLowerCase()}?`,
+  teacherToday: l => `Today: ${l.title.en}! Are you ready?`,
+  greatJob: n => `Great job, ${n}!`,
+  arenaLocked: 'Hi! Learn the colors first, then come play!',
+  arenaHi: n => `Hi, ${n}! Let's play Word Run!`,
+  arenaHow: 'Listen to the word and run to the right thing!',
+  bakeryLocked1: 'Hello, dear! I need fruits for my pies...',
+  bakeryLocked2: 'Learn the fruits with Teacher Fox, then come back!',
+  bakeryHello: n => `Hello, ${n}! I want to bake a pie.`,
+  bakeryNeed: o => `I need ${orderPhrase(o)}, please.`,
+  bakeryWhere: 'The fruits are in the Fruit Garden. Thank you!',
+  bakeryRemind: o => `Please bring me ${orderPhrase(o)}.`,
+  bakeryYes: o => `Yes! ${cap(orderPhrase(o))}! Thank you so much!`,
+  bakeryPay: 'Here is my pie... and 40 coins for you!',
+  bakeryWrong: 'Oh no! That is not right.',
+  bakeryRetry: o => `I need ${orderPhrase(o)}. Try again!`,
+  shopHello: n => `Hello, ${n}! Welcome to my shop!`,
+  shopBuy: a => `A ${a.en}! Very nice!`,
+  pet: sp => `${sp.en}!`,
+  hello: n => `Hello, ${n}!`,
+  createPet: 'Hello! Create your pet!',
+  welcomeBack: n => `Welcome back, ${n}!`,
+  howAreYou: 'Hello! How are you?',
+};
+
+// O nome do jogador não entra no áudio gravado: "Hello, Kiki! I want..." -> "Hello! I want..."
+export function stripName(text, name) {
+  if (!name) return text;
+  return text.split(', ' + name).join('').split(name).join('').replace(/\s+([!?.,])/g, '$1').trim();
+}
+
+// Chave do arquivo de áudio para um texto
+export function speechKey(voice, text, slow) {
+  const t = text.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  return `${voice}|${slow ? 'slow|' : ''}${t}`;
+}

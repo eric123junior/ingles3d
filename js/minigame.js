@@ -33,7 +33,7 @@ export class WordRun {
     mover.limit = { center: this.arena.center, radius: this.arena.radius - 0.3 };
     $('mgHud').classList.remove('hidden');
     $('mgScore').textContent = '0'; $('mgTime').textContent = DURATION; $('mgWord').textContent = '?';
-    $('mgSay').onclick = () => this.target && speak(this.target.en, { pitch: 1.25 });
+    $('mgSay').onclick = () => this.target && speak(this.target.en);
     $('mgQuit').onclick = () => { sfx.click(); this.end(true); };
     // contagem regressiva
     const cd = $('countdown');
@@ -77,7 +77,7 @@ export class WordRun {
     this.roundT = 0;
     $('mgWord').textContent = '?';
     this.rounds++;
-    setTimeout(() => this.active && speak(this.target.en, { pitch: 1.25 }), 250);
+    setTimeout(() => this.active && speak(this.target.en), 250);
   }
 
   update(dt, t) {
@@ -115,7 +115,7 @@ export class WordRun {
         sfx.wrong();
         this.time -= 3;
         toast(`❌ ${label('This is', 'Isto é')} <b>${it.w.en}</b> (−3s)`, 1300);
-        speak(it.w.en, { pitch: 1.25 });
+        speak(it.w.en);
       }
       break;
     }

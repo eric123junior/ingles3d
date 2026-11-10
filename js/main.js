@@ -5,7 +5,7 @@ import { makeAnimal, dressAnimal, makeLabel, makeIcon, makeFruit, toon, CONE } f
 import { Controls, PlayerMover, isTouch } from './player.js';
 import { S, save, resetSave, levelInfo, support, touchDay, shownStreak, lessonDone } from './state.js';
 import {
-  GAME_NAME, SPECIES, FUR_COLORS, NAMES, LESSONS, ACCESSORIES, FRUIT_ITEMS, NUM_WORDS, NUM_PT, SMALL_TALK,
+  GAME_NAME, SPECIES, FUR_COLORS, NAMES, LESSONS, ACCESSORIES, FRUIT_ITEMS, NUM_WORDS, NUM_PT, SMALL_TALK, VOICES, LINES, ORDER_KINDS, ORDER_MAX, orderPhrase,
 } from './content.js';
 import { speak, sfx, unlockAudio, stopSpeaking } from './audio.js';
 import { $, esc, toast, confetti, dialog, modal, isModalOpen, ptHtml, label, picHtml } from './ui.js';
@@ -60,18 +60,18 @@ const speciesOf = id => SPECIES.find(s => s.id === id) || SPECIES[0];
 
 // ---------- Bichinhos da vila ----------
 const NPC_DEFS = [
-  { id: 'greet', name: 'Teacher Bunny', species: 'bunny', color: '#f4a9c4', pitch: 1.5, emoji: '🐰', hat: 'bow' },
-  { id: 'colors', name: 'Teacher Cat', species: 'cat', color: '#f5a25d', pitch: 1.15, emoji: '🐱', face: 'glasses' },
-  { id: 'numbers', name: 'Teacher Panda', species: 'panda', color: '#3d3a4b', pitch: 0.85, emoji: '🐼', neck: 'bowtie' },
-  { id: 'fruits', name: 'Teacher Fox', species: 'fox', color: '#f58a3d', pitch: 1.3, emoji: '🦊', hat: 'flower' },
-  { id: 'arena', name: 'Coach Puppy', species: 'puppy', color: '#d9a066', pitch: 1.25, emoji: '🐶', hat: 'cap' },
-  { id: 'bakery', name: 'Mrs. Bear', species: 'bear', color: '#9a6a46', pitch: 0.8, emoji: '🐻', neck: 'scarf' },
-  { id: 'shop', name: 'Mimi', species: 'bunny', color: '#f7efe4', pitch: 1.45, emoji: '🐰', hat: 'party' },
+  { id: 'greet', name: 'Teacher Bunny', species: 'bunny', color: '#f4a9c4', emoji: '🐰', hat: 'bow' },
+  { id: 'colors', name: 'Teacher Cat', species: 'cat', color: '#f5a25d', emoji: '🐱', face: 'glasses' },
+  { id: 'numbers', name: 'Teacher Panda', species: 'panda', color: '#3d3a4b', emoji: '🐼', neck: 'bowtie' },
+  { id: 'fruits', name: 'Teacher Fox', species: 'fox', color: '#f58a3d', emoji: '🦊', hat: 'flower' },
+  { id: 'arena', name: 'Coach Puppy', species: 'puppy', color: '#d9a066', emoji: '🐶', hat: 'cap' },
+  { id: 'bakery', name: 'Mrs. Bear', species: 'bear', color: '#9a6a46', emoji: '🐻', neck: 'scarf' },
+  { id: 'shop', name: 'Mimi', species: 'bunny', color: '#f7efe4', emoji: '🐰', hat: 'party' },
 ];
 const WANDER_DEFS = [
-  { name: 'Bolt', species: 'puppy', color: '#8ec5ff', pitch: 1.3 },
-  { name: 'Pom', species: 'cat', color: '#bca6f2', pitch: 1.4 },
-  { name: 'Nugget', species: 'bear', color: '#f5c27a', pitch: 0.95 },
+  { name: 'Bolt', species: 'puppy', color: '#8ec5ff' },
+  { name: 'Pom', species: 'cat', color: '#bca6f2' },
+  { name: 'Nugget', species: 'bear', color: '#f5c27a' },
 ];
 
 const npcs = [];
@@ -86,7 +86,7 @@ function addNpc(def, pos, wander) {
   const icon = makeIcon();
   icon.position.y = 2.95;
   anim.root.add(icon);
-  const n = { ...def, anim, pos: anim.root.position, icon, wander, heading: 0, col: { x: pos.x, z: pos.z, r: 0.55 }, speed: 0 };
+  const n = { ...def, voice: VOICES[def.id || def.name], anim, pos: anim.root.position, icon, wander, heading: 0, col: { x: pos.x, z: pos.z, r: 0.55 }, speed: 0 };
   if (wander) Object.assign(n, { target: null, wait: Math.random() * 3 });
   npcs.push(n);
   return n;
@@ -224,8 +224,8 @@ function doInteract() {
   if (it.type === 'fruit') return pickFruit(it.f);
   if (it.type === 'gate') return busy(() => dialog({
     name: '🌲 Forest', lines: [
-      { en: 'The Forest is closed... for now!', pt: 'A Floresta está fechada... por enquanto!' },
-      { en: 'A new area is coming soon!', pt: 'Uma nova área chega na próxima versão do jogo!' },
+      { en: LINES.gate1, pt: 'A Floresta está fechada... por enquanto!' },
+      { en: LINES.gate2, pt: 'Uma nova área chega na próxima versão do jogo!' },
     ],
   }));
   const n = it.n;
@@ -244,7 +244,7 @@ const OK_CHOICE = [{ label: '👍 OK', value: true, cls: 'primary' }];
 async function smallTalk(n) {
   n.anim.jump();
   const ln = SMALL_TALK[Math.floor(Math.random() * SMALL_TALK.length)];
-  await dialog({ name: n.name, pitch: n.pitch, lines: [{ en: `Hi, ${S.name}!`, pt: `Oi, ${S.name}!` }, ln] });
+  await dialog({ name: n.name, voice: n.voice, lines: [{ en: LINES.hi(S.name), pt: `Oi, ${S.name}!` }, ln] });
 }
 
 // ---------- Professores ----------
@@ -253,25 +253,25 @@ const PREV_PT = { colors: 'Cumprimentos com a Professora Coelha 🐰', numbers: 
 async function talkTeacher(n) {
   const lesson = lessonById(n.id);
   if (!unlocked(n.id)) {
-    await dialog({ name: n.name, pitch: n.pitch, lines: [
-      { en: 'Hello! Come back later, please.', pt: `Olá! Volte depois, por favor. Primeiro faça a lição de ${PREV_PT[n.id]}.` },
+    await dialog({ name: n.name, voice: n.voice, lines: [
+      { en: LINES.teacherLocked, pt: `Olá! Volte depois, por favor. Primeiro faça a lição de ${PREV_PT[n.id]}.` },
     ] });
     return;
   }
   const replay = lessonDone(n.id);
   n.anim.jump();
   const go = await dialog({
-    name: n.name, pitch: n.pitch,
+    name: n.name, voice: n.voice,
     lines: replay
-      ? [{ en: `Hello again, ${S.name}! Do you want to practice ${lesson.title.en.toLowerCase()}?`, pt: `Olá de novo, ${S.name}! Quer praticar ${lesson.title.pt.toLowerCase()}?` }]
-      : [lesson.intro, { en: `Today: ${lesson.title.en}! Are you ready?`, pt: `Hoje: ${lesson.title.pt}! Vamos começar?` }],
+      ? [{ en: LINES.teacherReplay(S.name, lesson), pt: `Olá de novo, ${S.name}! Quer praticar ${lesson.title.pt.toLowerCase()}?` }]
+      : [lesson.intro, { en: LINES.teacherToday(lesson), pt: `Hoje: ${lesson.title.pt}! Vamos começar?` }],
     choices: [
       { label: `▶ ${label(replay ? 'Practice' : 'Start', replay ? 'Praticar' : 'Começar')}`, value: true, cls: 'go' },
       { label: label('Later', 'Depois'), value: false },
     ],
   });
   if (!go) return;
-  const r = await runLesson(lesson, { teacher: n.emoji, pitch: n.pitch, playerName: S.name });
+  const r = await runLesson(lesson, { teacher: n.emoji, playerName: S.name });
   if (!r.done) return;
   const correct = Math.max(0, r.total - r.mistakes);
   const stars = r.mistakes <= 1 ? 3 : r.mistakes <= 3 ? 2 : 1;
@@ -289,7 +289,7 @@ async function talkTeacher(n) {
   }
   sfx.levelUp(); confetti();
   n.anim.jump();
-  speak(`Great job, ${S.name}!`, { pitch: n.pitch });
+  speak(LINES.greatJob(S.name), { voice: n.voice });
   await resultModal({
     title: label('Lesson complete!', 'Lição completa!'),
     stars, xp, coins,
@@ -314,15 +314,15 @@ function resultModal({ title, stars, xp, coins, extra = '' }) {
 const wordRun = new WordRun(scene, world.arena);
 async function talkArena(n) {
   if (!unlocked('arena')) {
-    await dialog({ name: n.name, pitch: n.pitch, lines: [{ en: 'Hi! Learn the colors first, then come play!', pt: 'Oi! Aprenda as cores primeiro (com o Professor Gato) e depois venha jogar!' }] });
+    await dialog({ name: n.name, voice: n.voice, lines: [{ en: LINES.arenaLocked, pt: 'Oi! Aprenda as cores primeiro (com o Professor Gato) e depois venha jogar!' }] });
     return;
   }
   n.anim.jump();
   const go = await dialog({
-    name: n.name, pitch: n.pitch,
+    name: n.name, voice: n.voice,
     lines: [
-      { en: `Hi, ${S.name}! Let's play Word Run!`, pt: `Oi, ${S.name}! Vamos jogar a Corrida das Palavras!` },
-      { en: 'Listen to the word and run to the right thing!', pt: 'Ouça a palavra e corra até o objeto certo! Se errar, perde 3 segundos.' },
+      { en: LINES.arenaHi(S.name), pt: `Oi, ${S.name}! Vamos jogar a Corrida das Palavras!` },
+      { en: LINES.arenaHow, pt: 'Ouça a palavra e corra até o objeto certo! Se errar, perde 3 segundos.' },
     ],
     choices: [{ label: `▶ ${label('Play!', 'Jogar!')}`, value: true, cls: 'go' }, { label: label('Later', 'Depois'), value: false }],
   });
@@ -355,7 +355,6 @@ async function talkArena(n) {
 // ---------- Padaria (missão) ----------
 let basket = [];
 const countOf = (arr, k) => arr.filter(x => x === k).length;
-function orderPhrase(o) { const f = FRUIT_ITEMS[o.kind]; return `${NUM_WORDS[o.n]} ${o.n === 1 ? f.en : f.plural}`; }
 function orderPt(o) {
   const f = FRUIT_ITEMS[o.kind];
   const fem = /maçã|banana|laranja/.test(f.pt);
@@ -375,7 +374,7 @@ function updateBasket() {
   const order = S.order ? `📝 <b>${orderPhrase(S.order)}</b> <button id="bOrderSay">🔊</button>` : '';
   const items = basket.length ? basket.map(k => FRUIT_ITEMS[k].emoji).join('') : '—';
   el.innerHTML = `${order}<span>🧺 ${items}</span>${basket.length ? `<button id="bEmpty">${label('Empty', 'Esvaziar')}</button>` : ''}`;
-  const sb = $('bOrderSay'); if (sb) sb.onclick = () => speak(`I need ${orderPhrase(S.order)}, please.`, { pitch: 0.8 });
+  const sb = $('bOrderSay'); if (sb) sb.onclick = () => speak(LINES.bakeryNeed(S.order), { voice: VOICES.bakery });
   const eb = $('bEmpty'); if (eb) eb.onclick = () => { sfx.pop(); emptyBasket(); };
 }
 function emptyBasket() { basket = []; world.orchard.forEach(f => { f.active = true; f.mesh.visible = true; }); updateBasket(); }
@@ -393,45 +392,44 @@ function pickFruit(f) {
 
 function newOrder() {
   if (!S.missions) return { kind: 'redApple', n: 3 };
-  const kinds = Object.keys(FRUIT_ITEMS);
   let o;
-  do o = { kind: kinds[Math.floor(Math.random() * kinds.length)], n: 1 + Math.floor(Math.random() * 4) };
+  do o = { kind: ORDER_KINDS[Math.floor(Math.random() * ORDER_KINDS.length)], n: 1 + Math.floor(Math.random() * ORDER_MAX) };
   while (S.order && o.kind === S.order.kind && o.n === S.order.n);
   return o;
 }
 
 async function talkBakery(n) {
   if (!unlocked('bakery')) {
-    await dialog({ name: n.name, pitch: n.pitch, lines: [
-      { en: 'Hello, dear! I need fruits for my pies...', pt: 'Olá, querido(a)! Eu preciso de frutas para minhas tortas...' },
-      { en: 'Learn the fruits with Teacher Fox, then come back!', pt: 'Aprenda as frutas com a Professora Raposa e depois volte aqui!' },
+    await dialog({ name: n.name, voice: n.voice, lines: [
+      { en: LINES.bakeryLocked1, pt: 'Olá, querido(a)! Eu preciso de frutas para minhas tortas...' },
+      { en: LINES.bakeryLocked2, pt: 'Aprenda as frutas com a Professora Raposa e depois volte aqui!' },
     ] });
     return;
   }
   n.anim.jump();
   if (!S.order) {
     S.order = newOrder(); save();
-    await dialog({ name: n.name, pitch: n.pitch, lines: [
-      { en: `Hello, ${S.name}! I want to bake a pie.`, pt: `Olá, ${S.name}! Eu quero fazer uma torta.` },
-      { en: `I need ${orderPhrase(S.order)}, please.`, pt: `Eu preciso de ${orderPt(S.order)}, por favor.` },
-      { en: 'The fruits are in the Fruit Garden. Thank you!', pt: 'As frutas estão no Fruit Garden (Jardim das Frutas). Obrigada!' },
+    await dialog({ name: n.name, voice: n.voice, lines: [
+      { en: LINES.bakeryHello(S.name), pt: `Olá, ${S.name}! Eu quero fazer uma torta.` },
+      { en: LINES.bakeryNeed(S.order), pt: `Eu preciso de ${orderPt(S.order)}, por favor.` },
+      { en: LINES.bakeryWhere, pt: 'As frutas estão no Fruit Garden (Jardim das Frutas). Obrigada!' },
     ], choices: OK_CHOICE });
     updateHud();
     return;
   }
   const o = S.order;
   if (!basket.length) {
-    await dialog({ name: n.name, pitch: n.pitch, lines: [
-      { en: `Please bring me ${orderPhrase(o)}.`, pt: `Por favor, me traga ${orderPt(o)}. As frutas estão no Jardim das Frutas.` },
+    await dialog({ name: n.name, voice: n.voice, lines: [
+      { en: LINES.bakeryRemind(o), pt: `Por favor, me traga ${orderPt(o)}. As frutas estão no Jardim das Frutas.` },
     ] });
     return;
   }
   const ok = basket.length === o.n && countOf(basket, o.kind) === o.n;
   if (ok) {
     const reward = 40;
-    await dialog({ name: n.name, pitch: n.pitch, lines: [
-      { en: `Yes! ${orderPhrase(o)[0].toUpperCase() + orderPhrase(o).slice(1)}! Thank you so much!`, pt: `Isso! ${orderPt(o)}! Muito obrigada!` },
-      { en: `Here is my pie... and ${reward} coins for you!`, pt: `Aqui está minha torta... e ${reward} moedas para você!` },
+    await dialog({ name: n.name, voice: n.voice, lines: [
+      { en: LINES.bakeryYes(o), pt: `Isso! ${orderPt(o)}! Muito obrigada!` },
+      { en: LINES.bakeryPay, pt: `Aqui está minha torta... e ${reward} moedas para você!` },
     ] });
     S.order = null; S.missions++;
     basket = []; emptyBasket();
@@ -441,9 +439,9 @@ async function talkBakery(n) {
     grant(30, reward);
   } else {
     sfx.wrong();
-    await dialog({ name: n.name, pitch: n.pitch, lines: [
-      { en: `Oh no! You have ${basketPhrase()}.`, pt: `Ah não! Você trouxe: ${basket.map(k => FRUIT_ITEMS[k].emoji).join(' ')}` },
-      { en: `I need ${orderPhrase(o)}. Try again!`, pt: `Eu preciso de ${orderPt(o)}. Tente de novo! (devolvi as frutas ao jardim)` },
+    await dialog({ name: n.name, voice: n.voice, lines: [
+      { en: LINES.bakeryWrong, pt: `Ah não! Não está certo. Você trouxe: ${basket.map(k => FRUIT_ITEMS[k].emoji).join(' ')} (${basketPhrase()})` },
+      { en: LINES.bakeryRetry(o), pt: `Eu preciso de ${orderPt(o)}. Tente de novo! (devolvi as frutas ao jardim)` },
     ] });
     emptyBasket();
   }
@@ -452,7 +450,7 @@ async function talkBakery(n) {
 // ---------- Loja ----------
 async function talkShop(n) {
   n.anim.jump();
-  await dialog({ name: n.name, pitch: n.pitch, lines: [{ en: `Hello, ${S.name}! Welcome to my shop!`, pt: `Olá, ${S.name}! Bem-vindo(a) à minha loja!` }] });
+  await dialog({ name: n.name, voice: n.voice, lines: [{ en: LINES.shopHello(S.name), pt: `Olá, ${S.name}! Bem-vindo(a) à minha loja!` }] });
   await new Promise(res => openShop(res));
 }
 
@@ -471,7 +469,7 @@ function openShop(onClose) {
       const a = ACCESSORIES.find(x => x.id === b.dataset.buy);
       if (S.coins < a.price) return;
       S.coins -= a.price; S.owned.push(a.id); S.equipped[a.slot] = a.id;
-      sfx.coin(); speak(`A ${a.en}! Very nice!`, { pitch: 1.45 });
+      sfx.coin(); speak(LINES.shopBuy(a), { voice: VOICES.shop });
       dressAnimal(player, S.equipped, ACCESSORIES); player.jump();
       save(); updateHud(); render(p);
     });
@@ -479,7 +477,7 @@ function openShop(onClose) {
       const a = ACCESSORIES.find(x => x.id === b.dataset.eq);
       S.equipped[a.slot] = S.equipped[a.slot] === a.id ? null : a.id;
       sfx.pop();
-      if (S.equipped[a.slot]) speak(a.en, { pitch: 1.45 });
+      if (S.equipped[a.slot]) speak(a.en, { voice: VOICES.shop });
       dressAnimal(player, S.equipped, ACCESSORIES); player.jump();
       save(); render(p);
     });
@@ -516,7 +514,7 @@ function openMenu(onClose) {
       p.querySelector('#mRate').onclick = e => {
         S.settings.voiceRate = S.settings.voiceRate < 0.8 ? 0.85 : 0.65; save();
         e.target.textContent = S.settings.voiceRate < 0.8 ? '🐢 Devagar' : '🙂 Normal';
-        speak('Hello! How are you?');
+        speak(LINES.howAreYou);
       };
       p.querySelector('#mReset').onclick = e => {
         if (e.target.dataset.sure) { resetSave(); location.reload(); return; }
@@ -563,7 +561,7 @@ function startCreator(editing) {
       cr.querySelectorAll('.sw').forEach(x => x.classList.toggle('sel', x.dataset.c === S.color));
     }
     sfx.pop(); buildPlayer(); player.jump();
-    const sp = speciesOf(S.species); speak(`${sp.en}!`);
+    const sp = speciesOf(S.species); speak(LINES.pet(sp));
     sr.querySelectorAll('.sp-btn').forEach(x => x.classList.toggle('sel', x === b));
   });
   cr.querySelectorAll('[data-c]').forEach(b => b.onclick = () => {
@@ -582,7 +580,7 @@ $('btnCreate').onclick = () => {
   $('nameInput').blur();
   enterPlay();
   player.jump();
-  speak(`Hello, ${S.name}!`);
+  speak(LINES.hello(S.name));
   if (first) {
     setTimeout(() => toast(`👋 Bem-vindo(a) à Vila, ${esc(S.name)}!`, 3000), 300);
     setTimeout(() => toast(isTouch ? '🕹️ Arraste o lado esquerdo da tela para andar' : '🕹️ Ande com WASD ou as setas · E para falar', 4500), 2000);
@@ -606,8 +604,8 @@ if (S.created) {
 }
 $('btnPlay').onclick = () => {
   unlockAudio(); sfx.click();
-  if (S.created) { enterPlay(); speak(`Welcome back, ${S.name}!`); }
-  else { startCreator(false); speak('Hello! Create your pet!'); }
+  if (S.created) { enterPlay(); speak(LINES.welcomeBack(S.name)); }
+  else { startCreator(false); speak(LINES.createPet); }
 };
 $('btnNew').onclick = e => {
   if (!e.target.dataset.sure) { e.target.dataset.sure = 1; e.target.textContent = '⚠️ Toque de novo: apaga o progresso'; return; }

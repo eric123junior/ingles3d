@@ -68,7 +68,7 @@ const Q = {
 };
 
 // ---------- Execução ----------
-export function runLesson(lesson, { teacher, pitch, playerName }) {
+export function runLesson(lesson, { teacher, playerName }) {
   return new Promise(resolve => {
     const root = $('lesson'), body = $('lsBody'), foot = $('lsFoot'), fb = $('lsFeedback'), main = $('lsMain');
     const queue = build(lesson, playerName);
@@ -76,7 +76,7 @@ export function runLesson(lesson, { teacher, pitch, playerName }) {
     const requeued = new Set();
     root.classList.remove('hidden');
 
-    const say = (t, slow) => speak(t, { pitch, slow });
+    const say = (t, slow) => speak(t, { slow });
     const setBar = () => { $('lsBar').style.width = (done / (done + queue.length) * 100) + '%'; };
 
     const footer = (state, html = '', text = null, onClick = null) => {
@@ -306,7 +306,7 @@ export function runLesson(lesson, { teacher, pitch, playerName }) {
         footer('', '', label('Check', 'Verificar'), () => {
           const got = picked.map(c => c.textContent).join(' ');
           [...line.children, ...bank.children].forEach(b => b.onclick = null);
-          if (got === target) { say(target.replace(/[.,]/g, '')); right(); }
+          if (got === target) right();
           else wrong(`<b>${esc(target)}</b>`);
         });
         upd();

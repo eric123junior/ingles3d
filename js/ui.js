@@ -50,7 +50,7 @@ export function confetti(n = 70) {
 
 // ---------- Diálogo ----------
 // lines: [{en, pt}], choices: [{label, value, cls}]
-export function dialog({ name, pitch = 1.15, lines, choices }) {
+export function dialog({ name, voice, lines, choices }) {
   return new Promise(resolve => {
     const box = $('dialog'), btns = $('dlgBtns');
     let i = 0;
@@ -73,8 +73,8 @@ export function dialog({ name, pitch = 1.15, lines, choices }) {
       const ln = lines[i];
       $('dlgEn').textContent = ln.en;
       $('dlgPt').innerHTML = ln.pt ? ptHtml(ln.pt, '') : '';
-      $('dlgSay').onclick = () => speak(ln.en, { pitch });
-      speak(ln.en, { pitch });
+      $('dlgSay').onclick = () => speak(ln.en, { voice });
+      speak(ln.en, { voice });
       btns.innerHTML = '';
       if (i < lines.length - 1) {
         const b = document.createElement('button');

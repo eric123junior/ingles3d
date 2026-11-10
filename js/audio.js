@@ -1,5 +1,6 @@
 // Sons, voz em inglês (fala do navegador) e reconhecimento de fala (microfone).
 import { S } from './state.js';
+import { VOICES, speechKey, stripName } from './content.js';
 
 // ---------- Efeitos sonoros sintetizados ----------
 let ctx = null;
@@ -38,14 +39,18 @@ export const sfx = {
 };
 
 // ---------- Voz em inglês ----------
+// 1º: áudios gravados com voz neural (pasta audio/). 2º (reserva): voz em inglês do aparelho.
+// Nunca usa voz em português para ler inglês (fica incompreensível).
 const synth = window.speechSynthesis;
 let voice = null;
+let manifest = {};
+const ready = fetch('audio/manifest.json').then(r => r.ok ? r.json() : {}).then(m => { manifest = m; }).catch(() => {});
 
 function pickVoice() {
   if (!synth) return;
   const vs = synth.getVoices().filter(v => /^en(-|_|$)/i.test(v.lang));
-  if (!vs.length) return;
-  const prefs = [/Google US English/i, /Samantha/i, /Aria/i, /Jenny/i, /Zira/i, /Google UK English Female/i, /en-US/i];
+  if (!vs.length) { voice = null; return; }
+  const prefs = [/Natural/i, /Online/i, /Neural/i, /Google US English/i, /Samantha/i, /Google UK English Female/i, /en-US/i];
   for (const p of prefs) {
     const v = vs.find(v => p.test(v.name) || p.test(v.lang));
     if (v) { voice = v; return; }
@@ -57,26 +62,49 @@ if (synth) {
   synth.onvoiceschanged = pickVoice;
 }
 
-export const hasVoice = !!synth;
+let current = null;
+const cache = new Map();
+function fileFor(voiceId, text, slow) {
+  return manifest[speechKey(voiceId, text, slow)] || manifest[speechKey(VOICES.narrator, text, slow)] || null;
+}
 
-// Fala um texto em inglês. pitch muda a "voz" de cada bichinho.
-export function speak(text, { pitch = 1.15, rate = null, slow = false } = {}) {
-  if (!synth || !text) return Promise.resolve();
+// Fala um texto em inglês com a voz do personagem.
+export async function speak(text, { voice: voiceId = VOICES.narrator, slow = false } = {}) {
+  if (!text) return;
+  await ready;
+  stopSpeaking();
+  const t = stripName(text, S.name);
+  const userSlow = S.settings.voiceRate < 0.8;
+  let file = fileFor(voiceId, t, slow), rate = userSlow ? 0.85 : 1;
+  if (!file && slow) { file = fileFor(voiceId, t, false); rate = 0.7; }
+  if (file) {
+    let a = cache.get(file);
+    if (!a) { a = new Audio('audio/' + file); cache.set(file, a); }
+    a.playbackRate = rate;
+    a.currentTime = 0;
+    current = a;
+    return new Promise(res => {
+      a.onended = a.onerror = () => res();
+      a.play().catch(() => res());
+    });
+  }
+  console.warn('[voz] sem áudio gravado:', voiceId, JSON.stringify(t));
+  if (!synth || !voice) return; // sem voz em inglês no aparelho: fica em silêncio
   return new Promise(res => {
     try {
-      synth.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
-      if (voice) u.voice = voice;
-      u.pitch = pitch;
-      u.rate = slow ? 0.55 : (rate ?? S.settings.voiceRate);
+      u.lang = voice.lang; u.voice = voice;
+      u.rate = slow ? 0.6 : userSlow ? 0.75 : 0.9;
       u.onend = u.onerror = () => res();
       synth.speak(u);
-      setTimeout(res, 6000); // segurança caso onend não dispare
+      setTimeout(res, 6000);
     } catch (e) { res(); }
   });
 }
-export function stopSpeaking() { try { synth && synth.cancel(); } catch (e) { /* ignora */ } }
+export function stopSpeaking() {
+  try { synth && synth.cancel(); } catch (e) { /* ignora */ }
+  if (current) { current.pause(); current = null; }
+}
 
 // ---------- Reconhecimento de fala ----------
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;

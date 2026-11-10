@@ -1,0 +1,10 @@
+{
+  "name": "bichinhos-audio-tools",
+  "private": true,
+  "type": "module",
+  "description": "Gera os áudios em inglês do jogo com a voz neural Kokoro (roda no PC, não vai para o site)",
+  "dependencies": {
+    "@breezystack/lamejs": "^1.2.7",
+    "kokoro-js": "^1.2.1"
+  }
+}
