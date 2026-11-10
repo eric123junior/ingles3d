@@ -27,10 +27,19 @@
     <div class="panel title-panel">
       <div class="logo">🐾</div>
       <h1 id="gameName">Bichinhos <span>English</span></h1>
-      <p class="sub">Aprenda inglês brincando com bichinhos!</p>
-      <button id="btnPlay" class="big primary">▶ Jogar</button>
-      <button id="btnNew" class="big ghost hidden">✨ Começar de novo</button>
-      <p class="tiny">Use fones ou som ligado 🔊 — o jogo fala inglês com você.</p>
+      <div id="titleMain">
+        <p class="sub">Aprenda inglês brincando com bichinhos!</p>
+        <p id="whoPlays"></p>
+        <button id="btnPlay" class="big primary">▶ Jogar</button>
+        <button id="btnNew" class="big ghost hidden">✨ Começar de novo</button>
+        <button id="btnSwitch" class="small ghost">👥 Trocar de jogador</button>
+        <p class="tiny">Use fones ou som ligado 🔊 — o jogo fala inglês com você.</p>
+      </div>
+      <div id="picker" class="hidden">
+        <h2>Quem vai jogar?</h2>
+        <div id="pickRow"></div>
+        <p class="tiny">Cada jogador tem o seu curso, o seu cenário e o seu progresso.</p>
+      </div>
     </div>
   </div>
 
@@ -64,6 +73,7 @@
     <div class="hud-right">
       <div class="card pill" title="Moedas">💰 <b id="hudCoins">0</b></div>
       <div class="card pill" title="Dias seguidos jogando">🔥 <b id="hudStreak">0</b></div>
+      <button id="btnReview" class="card pill btn hidden" title="Revisão do dia">🧠 <b id="hudDue">0</b></button>
       <button id="btnMenu" class="card pill btn" title="Menu">☰</button>
     </div>
   </div>

@@ -120,5 +120,7 @@ export function isModalOpen() { return !!modalClose; }
 export function picHtml(w, cls = '') {
   if (w.color) return `<div class="pic ${cls}"><div class="swatch" style="background:${w.color}"></div></div>`;
   if (w.digit) return `<div class="pic ${cls}"><span class="digit">${w.digit}</span></div>`;
-  return `<div class="pic ${cls}">${w.pic || w.show || ''}</div>`;
+  if (w.pic || w.show) return `<div class="pic ${cls}">${w.pic || w.show}</div>`;
+  // sem figura: mostra a palavra em português no lugar
+  return `<div class="pic txt ${cls}">${esc(w.pt || '')}</div>`;
 }

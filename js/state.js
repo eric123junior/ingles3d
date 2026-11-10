@@ -1,13 +1,19 @@
 // Progresso do jogador (salvo no aparelho). Login/nuvem fica para a versão 2.
 
-const KEY = 'bichinhosEnglish.save.v1';
+import { activeId } from './profile.js';
+
+// um progresso separado para cada jogador
+const KEY = 'bichinhosEnglish.save.v2.' + activeId;
 
 function fresh() {
   return {
     created: false,
     name: '', species: 'cat', color: '#f5a25d',
     xp: 0, coins: 0,
-    lessons: {},          // id -> estrelas (1..3)
+    course: {},           // 'u1.greet' -> estrelas (1..3)
+    srs: {},              // revisão diária: 'hello' -> { box, due }
+    met: [],              // vizinhos conhecidos (missão da unidade 1)
+    profile: {},          // identidade da vila: from, age, job
     owned: [], equipped: { hat: null, face: null, neck: null },
     streak: 0, lastDay: null,
     missions: 0, order: null, bestRun: 0, playedRun: false,
@@ -68,5 +74,3 @@ export function touchDay() {
   S.lastDay = t;
   return S.streak;
 }
-
-export function lessonDone(id) { return !!S.lessons[id]; }

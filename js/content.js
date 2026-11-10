@@ -1,6 +1,10 @@
-// Conteúdo do jogo: lições, loja, falas. Tudo em inglês com apoio em português.
+// Conteúdo comum do jogo: loja, frutas, falas. Tudo em inglês com apoio em português.
+// As lições ficam em js/courses/ e o cenário/personagens de cada jogador em js/themes.js.
+import { activeId } from './profile.js';
+import { THEMES, voicesFor, peopleFor } from './themes.js';
 
 export const GAME_NAME = 'Bichinhos English';
+export const THEME = THEMES[activeId];
 
 export const SPECIES = [
   { id: 'cat', emoji: '🐱', en: 'cat', pt: 'gato' },
@@ -14,88 +18,6 @@ export const SPECIES = [
 export const FUR_COLORS = ['#f5a25d', '#f7efe4', '#a3acb9', '#f4a9c4', '#8ec5ff', '#bca6f2', '#a8d98a', '#9a6a46', '#3d3a4b'];
 
 export const NAMES = ['Kiki', 'Lulu', 'Mochi', 'Bolinha', 'Pipoca', 'Nina', 'Tobi', 'Bento', 'Mel', 'Fofucho', 'Luna', 'Biscoito'];
-
-// Cada palavra: en, pt e um visual (pic = emoji, color = cor, digit = número)
-export const LESSONS = [
-  {
-    id: 'greet', icon: '👋', npc: 'bunny',
-    title: { en: 'Greetings', pt: 'Cumprimentos' },
-    intro: { en: 'Hi! I am Teacher Bunny. Let\'s learn to say hello!', pt: 'Oi! Eu sou a Professora Coelha. Vamos aprender a cumprimentar!' },
-    words: [
-      { en: 'hello', pt: 'olá / oi', pic: '👋' },
-      { en: 'goodbye', pt: 'tchau', pic: '🚪' },
-      { en: 'thank you', pt: 'obrigado(a)', pic: '🙏' },
-      { en: 'please', pt: 'por favor', pic: '🥺' },
-      { en: 'yes', pt: 'sim', pic: '👍' },
-      { en: 'no', pt: 'não', pic: '👎' },
-      { en: 'good morning', pt: 'bom dia', pic: '🌅' },
-      { en: 'good night', pt: 'boa noite', pic: '🌙' },
-    ],
-  },
-  {
-    id: 'colors', icon: '🎨', npc: 'cat',
-    title: { en: 'Colors', pt: 'Cores' },
-    intro: { en: 'Hello! I am Teacher Cat. I love colors!', pt: 'Olá! Eu sou o Professor Gato. Eu amo cores!' },
-    words: [
-      { en: 'red', pt: 'vermelho', color: '#ef4444' },
-      { en: 'blue', pt: 'azul', color: '#3b82f6' },
-      { en: 'yellow', pt: 'amarelo', color: '#facc15' },
-      { en: 'green', pt: 'verde', color: '#22c55e' },
-      { en: 'orange', pt: 'laranja', color: '#f97316' },
-      { en: 'purple', pt: 'roxo', color: '#a855f7' },
-      { en: 'pink', pt: 'rosa', color: '#f472b6' },
-    ],
-  },
-  {
-    id: 'numbers', icon: '🔢', npc: 'panda',
-    title: { en: 'Numbers', pt: 'Números' },
-    intro: { en: 'Hello! I am Teacher Panda. Let\'s count from one to ten!', pt: 'Olá! Eu sou o Professor Panda. Vamos contar de um a dez!' },
-    words: [
-      { en: 'one', pt: 'um', digit: 1 },
-      { en: 'two', pt: 'dois', digit: 2 },
-      { en: 'three', pt: 'três', digit: 3 },
-      { en: 'four', pt: 'quatro', digit: 4 },
-      { en: 'five', pt: 'cinco', digit: 5 },
-      { en: 'six', pt: 'seis', digit: 6 },
-      { en: 'seven', pt: 'sete', digit: 7 },
-      { en: 'eight', pt: 'oito', digit: 8 },
-      { en: 'nine', pt: 'nove', digit: 9 },
-      { en: 'ten', pt: 'dez', digit: 10 },
-    ],
-  },
-  {
-    id: 'fruits', icon: '🍎', npc: 'fox',
-    title: { en: 'Fruits', pt: 'Frutas' },
-    intro: { en: 'Hello! I am Teacher Fox. Yummy fruits!', pt: 'Olá! Eu sou a Professora Raposa. Frutas gostosas!' },
-    words: [
-      { en: 'apple', pt: 'maçã', pic: '🍎' },
-      { en: 'banana', pt: 'banana', pic: '🍌' },
-      { en: 'orange', pt: 'laranja', pic: '🍊' },
-      { en: 'grapes', pt: 'uvas', pic: '🍇' },
-      { en: 'strawberry', pt: 'morango', pic: '🍓' },
-      { en: 'watermelon', pt: 'melancia', pic: '🍉' },
-      { en: 'pear', pt: 'pera', pic: '🍐' },
-    ],
-  },
-];
-
-// Perguntas especiais de cada lição (além das automáticas)
-export const SPECIALS = {
-  colors: [
-    { show: '🍌', answer: 'yellow' }, { show: '🍓', answer: 'red' }, { show: '🐸', answer: 'green' },
-    { show: '🍆', answer: 'purple' }, { show: '🐳', answer: 'blue' }, { show: '🥕', answer: 'orange' }, { show: '🌸', answer: 'pink' },
-  ],
-  numbers: [
-    { show: '⭐⭐⭐', answer: 'three' }, { show: '🐟🐟🐟🐟🐟', answer: 'five' }, { show: '🎈🎈', answer: 'two' },
-    { show: '🍪🍪🍪🍪', answer: 'four' }, { show: '🌼🌼🌼🌼🌼🌼', answer: 'six' }, { show: '🐞', answer: 'one' },
-  ],
-  fruits: [
-    { show: '🍎🍎🍎', answer: 'three red apples', wrong: ['two red apples', 'three green apples'] },
-    { show: '🍏🍏', answer: 'two green apples', wrong: ['two red apples', 'four green apples'] },
-    { show: '🍌🍌🍌🍌', answer: 'four bananas', wrong: ['five bananas', 'four oranges'] },
-    { show: '🍓🍓🍓🍓🍓', answer: 'five strawberries', wrong: ['five grapes', 'three strawberries'] },
-  ],
-};
 
 export const ACCESSORIES = [
   { id: 'bow', slot: 'hat', icon: '🎀', en: 'bow', pt: 'laço', price: 30 },
@@ -122,24 +44,15 @@ export const FRUIT_ITEMS = {
 export const NUM_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
 export const NUM_PT = ['zero', 'uma', 'duas', 'três', 'quatro', 'cinco'];
 
-// Falas dos bichinhos que passeiam pela vila
-export const SMALL_TALK = [
-  { en: 'Hello! Good morning!', pt: 'Olá! Bom dia!' },
-  { en: 'Hi! I like apples.', pt: 'Oi! Eu gosto de maçãs.' },
-  { en: 'Hello, friend!', pt: 'Olá, amigo!' },
-  { en: 'Thank you! Goodbye!', pt: 'Obrigado! Tchau!' },
-  { en: 'I love the color blue!', pt: 'Eu amo a cor azul!' },
-  { en: 'One, two, three... hello!', pt: 'Um, dois, três... olá!' },
-];
+// Falas dos bichinhos que passeiam pelo cenário
+export const SMALL_TALK = THEME.smallTalk;
 
 // ---------- Vozes e falas ----------
 // Vozes neurais Kokoro (geradas no PC por tools/gerar-audio.mjs). Cada personagem tem a sua.
-export const VOICES = {
-  narrator: 'af_heart', // palavras das lições, minijogo, loja
-  greet: 'af_bella', colors: 'am_michael', numbers: 'am_fenrir', fruits: 'af_sarah',
-  arena: 'am_puck', bakery: 'bf_emma', shop: 'af_aoede',
-  Bolt: 'am_puck', Pom: 'af_bella', Nugget: 'am_michael',
-};
+export const VOICES = voicesFor(THEME);
+
+// Quem é quem (nome e emoji nos diálogos)
+export const PEOPLE = peopleFor(THEME);
 
 // Pedidos da padaria: 5 frutas x 1 a 4 unidades
 export const ORDER_KINDS = Object.keys(FRUIT_ITEMS);
@@ -150,23 +63,17 @@ const cap = s => s[0].toUpperCase() + s.slice(1);
 // Falas em inglês dos bichinhos ({n} = nome do jogador; não é falado no áudio)
 export const LINES = {
   hi: n => `Hi, ${n}!`,
-  gate1: 'The Forest is closed... for now!',
   gate2: 'A new area is coming soon!',
   teacherLocked: 'Hello! Come back later, please.',
-  teacherReplay: (n, l) => `Hello again, ${n}! Do you want to practice ${l.title.en.toLowerCase()}?`,
-  teacherToday: l => `Today: ${l.title.en}! Are you ready?`,
+  teacherAgain: "Hello again! Let's keep learning!",
   greatJob: n => `Great job, ${n}!`,
-  arenaLocked: 'Hi! Learn the colors first, then come play!',
+  arenaLocked: 'Hi! Learn the numbers first, then come play!',
   arenaHi: n => `Hi, ${n}! Let's play Word Run!`,
   arenaHow: 'Listen to the word and run to the right thing!',
-  bakeryLocked1: 'Hello, dear! I need fruits for my pies...',
-  bakeryLocked2: 'Learn the fruits with Teacher Fox, then come back!',
-  bakeryHello: n => `Hello, ${n}! I want to bake a pie.`,
+  bakeryLocked2: 'Finish Unit 3 first, then come back!',
   bakeryNeed: o => `I need ${orderPhrase(o)}, please.`,
-  bakeryWhere: 'The fruits are in the Fruit Garden. Thank you!',
   bakeryRemind: o => `Please bring me ${orderPhrase(o)}.`,
   bakeryYes: o => `Yes! ${cap(orderPhrase(o))}! Thank you so much!`,
-  bakeryPay: 'Here is my pie... and 40 coins for you!',
   bakeryWrong: 'Oh no! That is not right.',
   bakeryRetry: o => `I need ${orderPhrase(o)}. Try again!`,
   shopHello: n => `Hello, ${n}! Welcome to my shop!`,

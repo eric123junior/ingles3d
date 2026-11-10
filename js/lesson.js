@@ -1,11 +1,16 @@
-// Motor das lições: cartões para aprender palavras + exercícios (ouvir, ler, falar, escrever).
+// Motor das lições: transforma etapas do curso em passos (cartões, exercícios, gramática,
+// escuta de diálogo, conversa) e roda tudo na tela de lição.
 import { speak, stopSpeaking, sfx, canListen, listen, speechMatches, norm, lev } from './audio.js';
-import { SPECIALS } from './content.js';
+import { VOICES, PEOPLE } from './content.js';
 import { $, esc, instr, ptHtml, picHtml, label } from './ui.js';
-import { support } from './state.js';
+import { support, S } from './state.js';
 
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pickOne = a => a[Math.floor(Math.random() * a.length)];
+const hasVisual = w => !!(w.pic || w.color || w.digit);
+export const isPhrase = w => w.en.split(' ').length >= 3;
+const typeable = w => !/[ '\-]/.test(w.en) && w.en.length <= 8;
+const withName = t => t.split('{name}').join(S.name);
 
 let micBlocked = false;
 
@@ -15,65 +20,104 @@ function praise() {
   return support() === 'full' ? `${pt} 🎉` : `${en} 🎉${en !== pt ? `<small>${pt}</small>` : ''}`;
 }
 
-// ---------- Monta a sequência da lição ----------
-function build(lesson, playerName) {
-  const W = lesson.words;
+// ---------- Construção dos passos ----------
+function exercisesFor(w, pool, kinds) {
+  return kinds.map(kind => ({ kind, w, pool }));
+}
+
+export function buildWords(stage) {
+  const W = stage.items;
   const nChunks = Math.ceil(W.length / 4);
-  const chunks = [];
-  const order = W.slice(); // ordem natural (números em sequência)
+  const steps = [], known = [];
   let idx = 0;
   for (let c = 0; c < nChunks; c++) {
     const size = Math.round((W.length - idx) / (nChunks - c));
-    chunks.push(order.slice(idx, idx + size));
+    const ch = W.slice(idx, idx + size);
     idx += size;
-  }
-  const steps = [];
-  const known = [];
-  for (const ch of chunks) {
     for (const w of ch) steps.push({ kind: 'learn', w });
     known.push(...ch);
     const s = shuffle(ch);
-    steps.push({ kind: 'listen', w: s[0], pool: known.slice() });
-    steps.push({ kind: 'pick', w: s[1 % s.length], pool: known.slice() });
+    const phr = isPhrase(s[0]);
+    if (phr) {
+      steps.push({ kind: 'listenText', w: s[0], pool: known.slice() });
+      steps.push({ kind: 'translate', w: s[1 % s.length], pool: known.slice() });
+    } else {
+      steps.push({ kind: 'listen', w: s[0], pool: known.slice() });
+      steps.push({ kind: 'pick', w: s[1 % s.length], pool: known.slice() });
+    }
     steps.push({ kind: 'speak', w: s[2 % s.length] });
   }
-  // revisão
+  // revisão da etapa
   const all = shuffle(W);
-  const typeable = all.filter(w => !w.en.includes(' ') && w.en.length <= 7);
-  steps.push({ kind: 'read', w: all[0], pool: W });
-  steps.push({ kind: 'listen', w: all[1], pool: W });
-  steps.push({ kind: 'type', w: typeable[0] || all[2] });
-  if (lesson.id === 'greet') {
-    steps.push({ kind: 'order', words: ['Hello,', 'my', 'name', 'is', playerName + '.'], pt: `Olá, meu nome é ${playerName}.` });
-    steps.push({ kind: 'speak', w: { en: 'thank you', pt: 'obrigado(a)', pic: '🙏' } });
-  } else {
-    const sp = shuffle(SPECIALS[lesson.id]);
-    steps.push({ kind: 'special', lesson: lesson.id, q: sp[0] });
-    steps.push({ kind: 'special', lesson: lesson.id, q: sp[1] });
+  const words = all.filter(w => !isPhrase(w)), phrases = all.filter(isPhrase);
+  if (words.length >= 3) {
+    steps.push({ kind: 'read', w: words[0], pool: W.filter(w => !isPhrase(w)) });
+    steps.push({ kind: 'listen', w: words[1], pool: W.filter(w => !isPhrase(w)) });
+    const t = words.find(typeable);
+    if (t) steps.push({ kind: 'type', w: t });
   }
+  if (phrases.length >= 2) {
+    steps.push({ kind: 'meaning', w: phrases[0], pool: phrases });
+    steps.push({ kind: 'order', sentence: phrases[1].en, pt: phrases[1].pt });
+    steps.push({ kind: 'listenText', w: phrases[Math.min(2, phrases.length - 1)], pool: phrases });
+  }
+  for (const sp of shuffle(stage.specials || []).slice(0, 2)) steps.push({ kind: 'special', sp, pool: W });
   return steps;
 }
 
+export function buildGrammar(stage) {
+  const steps = stage.cards.map(card => ({ kind: 'gcard', card }));
+  for (const q of stage.quiz) steps.push(q.order ? { kind: 'order', sentence: q.order, pt: q.pt } : { kind: 'gap', g: q });
+  return steps;
+}
+
+export function buildListen(stage) {
+  return [{ kind: 'dialogue', stage }, ...stage.questions.map(q => ({ kind: 'question', q }))];
+}
+
+export function buildTalk(turns, partner, scene) {
+  return [{ kind: 'talk', turns, partner, scene }];
+}
+
+// Revisão diária: um exercício por item, misturando tipos
+export function buildReview(items, pool) {
+  return shuffle(items).map(w => {
+    const same = pool.filter(x => isPhrase(x) === isPhrase(w) && x.en !== w.en);
+    const p = [w, ...same];
+    let kinds;
+    if (isPhrase(w)) kinds = ['listenText', 'translate', 'meaning', 'order'];
+    else if (hasVisual(w)) kinds = ['listen', 'pick', 'read', 'translate'].concat(typeable(w) ? ['type'] : []);
+    else kinds = ['listenText', 'translate', 'meaning'];
+    const kind = pickOne(kinds);
+    if (kind === 'order') return { kind, sentence: w.en, pt: w.pt, item: w };
+    return { kind, w, pool: p, item: w };
+  });
+}
+
 const Q = {
+  learn: { en: 'New word!', pt: 'Palavra nova!' },
+  learnPhrase: { en: 'New phrase!', pt: 'Frase nova!' },
   listen: { en: 'Listen and choose the right picture.', pt: 'Ouça e escolha a imagem certa.' },
+  listenText: { en: 'Listen and choose what you hear.', pt: 'Ouça e escolha o que você ouviu.' },
   read: { en: 'Read and choose the right picture.', pt: 'Leia e escolha a imagem certa.' },
   pick: { en: 'What is this in English?', pt: 'Como se diz isto em inglês?' },
+  translate: { en: 'How do you say this in English?', pt: 'Como se diz isto em inglês?' },
+  meaning: { en: 'What does it mean?', pt: 'O que significa?' },
   speak: { en: 'Say it out loud!', pt: 'Fale em voz alta!' },
   type: { en: 'Write it in English.', pt: 'Escreva em inglês.' },
   order: { en: 'Put the words in order.', pt: 'Coloque as palavras na ordem.' },
-  colors: { en: 'What color is it?', pt: 'Qual é a cor?' },
-  numbers: { en: 'How many?', pt: 'Quantos são?' },
-  fruits: { en: 'What do you see?', pt: 'O que você vê?' },
-  learn: { en: 'New word!', pt: 'Palavra nova!' },
+  gap: { en: 'Complete the sentence.', pt: 'Complete a frase.' },
+  dialogue: { en: 'Listen to the conversation.', pt: 'Ouça a conversa.' },
 };
 
 // ---------- Execução ----------
-export function runLesson(lesson, { teacher, playerName }) {
+// steps: lista de passos. opts: { teacher (emoji), onResult(step, ok), onSave(field, value) }
+export function runSession(steps, { teacher = '🐾', onResult, onSave } = {}) {
   return new Promise(resolve => {
     const root = $('lesson'), body = $('lsBody'), foot = $('lsFoot'), fb = $('lsFeedback'), main = $('lsMain');
-    const queue = build(lesson, playerName);
+    const queue = steps.slice();
     let done = 0, mistakes = 0, graded = 0, cur = null;
-    const requeued = new Set();
+    const requeued = new Set(), firstResult = new Set();
     root.classList.remove('hidden');
 
     const say = (t, slow) => speak(t, { slow });
@@ -108,57 +152,43 @@ export function runLesson(lesson, { teacher, playerName }) {
       cur = queue.shift();
       if (!cur) return finish(true);
       body.scrollTop = 0;
+      body.className = 'ls-body';
       render[cur.kind](cur);
     }
 
+    function report(ok) {
+      if (firstResult.has(cur)) return;
+      firstResult.add(cur);
+      onResult && onResult(cur, ok);
+    }
     function right(extra = '') {
       sfx.right();
       graded++;
+      report(true);
       footer('ok', praise() + extra, null, next);
     }
-    function wrong(correctHtml) {
+    function wrong(correctHtml, why = '') {
       sfx.wrong();
       graded++;
       mistakes++;
+      report(false);
       if (!requeued.has(cur)) { requeued.add(cur); queue.push(cur); }
-      footer('no', `${label('Correct answer:', 'Resposta certa:')} ${correctHtml}`, null, next);
+      footer('no', `${label('Correct answer:', 'Resposta certa:')} ${correctHtml}${why ? `<small>💡 ${esc(why)}</small>` : ''}`, null, next);
     }
 
-    // Opções com imagens
-    function picChoices(w, pool, onDone) {
-      const opts = shuffle([w, ...shuffle(pool.filter(x => x !== w)).slice(0, 3)]);
-      const box = document.createElement('div');
-      box.className = 'choices';
-      opts.forEach(o => {
-        const b = document.createElement('button');
-        b.className = 'choice';
-        b.innerHTML = picHtml(o);
-        b.onclick = () => {
-          if (box.dataset.done) return;
-          box.dataset.done = 1;
-          if (o === w) { b.classList.add('right'); say(w.en); onDone(true); }
-          else {
-            b.classList.add('wrong');
-            [...box.children][opts.indexOf(w)].classList.add('right');
-            onDone(false);
-          }
-        };
-        box.appendChild(b);
-      });
-      return box;
-    }
-    function wordChoices(answer, options, onDone) {
+    // Botões de escolha (imagens ou textos)
+    function choices(answer, options, { render: r = o => esc(o), speakAnswer = true, words = true, onDone }) {
       const opts = shuffle(options);
       const box = document.createElement('div');
-      box.className = 'choices words';
+      box.className = 'choices' + (words ? ' words' : '');
       opts.forEach(o => {
         const b = document.createElement('button');
         b.className = 'choice';
-        b.textContent = o;
+        b.innerHTML = r(o);
         b.onclick = () => {
           if (box.dataset.done) return;
           box.dataset.done = 1;
-          if (o === answer) { b.classList.add('right'); say(answer); onDone(true); }
+          if (o === answer) { b.classList.add('right'); if (speakAnswer) say(typeof o === 'string' ? o : o.en); onDone(true); }
           else {
             b.classList.add('wrong');
             [...box.children][opts.indexOf(answer)].classList.add('right');
@@ -169,14 +199,25 @@ export function runLesson(lesson, { teacher, playerName }) {
       });
       return box;
     }
+    const others = (w, pool, n) => shuffle(pool.filter(x => x.en !== w.en)).slice(0, n);
+
+    const hearRow = (text) => {
+      const row = document.createElement('div');
+      row.className = 'say-row';
+      row.innerHTML = `<button class="small">🔊 ${label('Listen', 'Ouvir')}</button><button class="small">🐢 ${label('Slow', 'Devagar')}</button>`;
+      row.children[0].onclick = () => say(text);
+      row.children[1].onclick = () => say(text, true);
+      return row;
+    };
 
     const render = {
       learn({ w }) {
+        const phr = isPhrase(w);
         body.innerHTML = `
-          <div class="teacher-tip"><span class="face">${teacher}</span><div>${instr(Q.learn)}</div></div>
+          <div class="teacher-tip"><span class="face">${teacher}</span><div>${instr(phr ? Q.learnPhrase : Q.learn)}</div></div>
           <div class="word-card">
-            ${picHtml(w)}
-            <div class="word-en">${esc(w.en)}</div>
+            ${hasVisual(w) ? picHtml(w, phr ? 'sm' : '') : ''}
+            <div class="word-en ${phr ? 'phrase' : ''}">${esc(w.en)}</div>
             <div class="word-pt">${ptHtml(w.pt, '')}</div>
           </div>
           <div class="say-row">
@@ -206,28 +247,50 @@ export function runLesson(lesson, { teacher, playerName }) {
         body.innerHTML = `${instr(Q.listen)}<button class="audio-big" id="bA">🔊</button><button class="small ghost" id="bS">🐢 ${label('Slow', 'Devagar')}</button>`;
         $('bA').onclick = () => say(w.en);
         $('bS').onclick = () => say(w.en, true);
-        body.appendChild(picChoices(w, pool, ok => ok ? right() : wrong(`<b>${esc(w.en)}</b>`)));
+        body.appendChild(choices(w, [w, ...others(w, pool, 3)], { render: o => picHtml(o), words: false, onDone: ok => ok ? right() : wrong(`<b>${esc(w.en)}</b>`) }));
+        setTimeout(() => say(w.en), 250);
+        footer('', '', null, null);
+      },
+
+      listenText({ w, pool }) {
+        body.innerHTML = `${instr(Q.listenText)}<button class="audio-big" id="bA">🔊</button><button class="small ghost" id="bS">🐢 ${label('Slow', 'Devagar')}</button>`;
+        $('bA').onclick = () => say(w.en);
+        $('bS').onclick = () => say(w.en, true);
+        body.appendChild(choices(w.en, [w.en, ...others(w, pool, 2).map(x => x.en)], { speakAnswer: false, onDone: ok => ok ? right() : wrong(`<b>${esc(w.en)}</b>`) }));
         setTimeout(() => say(w.en), 250);
         footer('', '', null, null);
       },
 
       read({ w, pool }) {
         body.innerHTML = `${instr(Q.read)}<div class="word-card"><div class="word-en">${esc(w.en)}</div></div>`;
-        body.appendChild(picChoices(w, pool, ok => ok ? right() : wrong(`<b>${esc(w.en)}</b> = ${esc(w.pt)}`)));
+        body.appendChild(choices(w, [w, ...others(w, pool, 3)], { render: o => picHtml(o), words: false, onDone: ok => ok ? right() : wrong(`<b>${esc(w.en)}</b> = ${esc(w.pt)}`) }));
         footer('', '', null, null);
       },
 
       pick({ w, pool }) {
         body.innerHTML = `${instr(Q.pick)}<div class="word-card">${picHtml(w)}</div>`;
-        const opts = [w.en, ...shuffle(pool.filter(x => x !== w)).slice(0, 2).map(x => x.en)];
-        body.appendChild(wordChoices(w.en, opts, ok => ok ? right() : wrong(`<b>${esc(w.en)}</b>`)));
+        body.appendChild(choices(w.en, [w.en, ...others(w, pool, 2).map(x => x.en)], { onDone: ok => ok ? right() : wrong(`<b>${esc(w.en)}</b>`) }));
+        footer('', '', null, null);
+      },
+
+      translate({ w, pool }) {
+        body.innerHTML = `${instr(Q.translate)}<div class="word-card">${hasVisual(w) ? picHtml(w, 'sm') : ''}<div class="word-en phrase">${esc(w.pt)}</div></div>`;
+        body.appendChild(choices(w.en, [w.en, ...others(w, pool, 2).map(x => x.en)], { onDone: ok => ok ? right() : wrong(`<b>${esc(w.en)}</b>`) }));
+        footer('', '', null, null);
+      },
+
+      meaning({ w, pool }) {
+        body.innerHTML = `${instr(Q.meaning)}<div class="word-card"><div class="word-en phrase">${esc(w.en)}</div></div><button class="small ghost" id="bA">🔊 ${label('Listen', 'Ouvir')}</button>`;
+        $('bA').onclick = () => say(w.en);
+        say(w.en);
+        body.appendChild(choices(w.pt, [w.pt, ...others(w, pool, 2).map(x => x.pt)], { speakAnswer: false, onDone: ok => ok ? right() : wrong(`<b>${esc(w.pt)}</b>`) }));
         footer('', '', null, null);
       },
 
       speak({ w }) {
         const useMic = canListen && !micBlocked;
         body.innerHTML = `${instr(Q.speak)}
-          <div class="word-card">${picHtml(w, 'sm')}<div class="word-en">${esc(w.en)}</div><div class="word-pt">${ptHtml(w.pt, '')}</div></div>
+          <div class="word-card">${picHtml(w, 'sm')}<div class="word-en ${isPhrase(w) ? 'phrase' : ''}">${esc(w.en)}</div><div class="word-pt">${ptHtml(w.pt, '')}</div></div>
           <div class="say-row"><button id="bHear">🔊 ${label('Listen', 'Ouvir')}</button><button id="bSlow">🐢 ${label('Slow', 'Devagar')}</button></div>
           ${useMic ? `<button class="mic-btn" id="bMic">🎤</button><div class="heard" id="heard">${label('Tap the microphone and speak', 'Toque no microfone e fale')}</div>`
                    : `<div class="heard">${label('Listen and repeat out loud.', 'Ouça e repita em voz alta.')}</div>`}`;
@@ -235,7 +298,7 @@ export function runLesson(lesson, { teacher, playerName }) {
         $('bSlow').onclick = () => say(w.en, true);
         say(w.en);
         if (!useMic) {
-          footer('', '', label('I said it! ✅', 'Eu falei! ✅'), () => { sfx.right(); graded++; footer('ok', praise(), null, next); });
+          footer('', '', label('I said it! ✅', 'Eu falei! ✅'), () => { sfx.right(); footer('ok', praise(), null, next); });
           return;
         }
         let tries = 0;
@@ -246,15 +309,15 @@ export function runLesson(lesson, { teacher, playerName }) {
           try {
             const alts = await listen();
             mic.classList.remove('on'); mic.disabled = false;
-            if (speechMatches(alts, w.en)) { mic.disabled = true; right(); return; }
+            if (speechMatches(alts, w.en)) { mic.disabled = true; sfx.right(); footer('ok', praise(), null, next); return; }
             tries++;
             sfx.wrong();
             $('heard').innerHTML = alts.length ? `${label('I heard', 'Entendi')}: "${esc(alts[0])}". ${label('Try again!', 'Tente de novo!')}` : label('I didn\'t hear you. Try again!', 'Não ouvi. Tente de novo!');
-            if (tries >= 2) footer('', '', label('Continue', 'Continuar'), () => { graded++; next(); });
+            if (tries >= 2) footer('', '', label('Continue', 'Continuar'), next);
           } catch (e) {
             mic.classList.remove('on'); mic.disabled = false;
             $('heard').textContent = micMsg(e);
-            if (micBlocked) footer('', '', label('I said it! ✅', 'Eu falei! ✅'), () => { graded++; next(); });
+            if (micBlocked) footer('', '', label('I said it! ✅', 'Eu falei! ✅'), next);
           }
         };
         footer('', '', label('Skip 🎤', 'Pular 🎤'), next);
@@ -262,9 +325,9 @@ export function runLesson(lesson, { teacher, playerName }) {
       },
 
       type({ w }) {
-        const hint = w.en.split('').map((c, i) => i === 0 ? c : (c === ' ' ? ' ' : '_')).join(' ');
+        const hint = w.en.split('').map((c, i) => i === 0 ? c : '_').join(' ');
         body.innerHTML = `${instr(Q.type)}
-          <div class="word-card">${picHtml(w, 'sm')}<div class="word-pt">${ptHtml(w.pt, '')}</div></div>
+          <div class="word-card">${picHtml(w, 'sm')}<div class="word-pt">${esc(w.pt)}</div></div>
           <button class="small ghost" id="bHear">🔊 ${label('Listen', 'Ouvir')}</button>
           <input class="type-input" id="tIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="...">
           <div class="hint-letters">${esc(hint)}</div>`;
@@ -283,12 +346,14 @@ export function runLesson(lesson, { teacher, playerName }) {
         footer('', '', label('Check', 'Verificar'), check);
       },
 
-      order({ words, pt }) {
-        const target = words.join(' ');
-        body.innerHTML = `${instr(Q.order)}<div class="word-pt">${ptHtml(pt, '')}</div><div class="order-line" id="line"></div><div class="order-bank" id="bank"></div>`;
+      order({ sentence, pt }) {
+        const words = sentence.split(' ');
+        body.innerHTML = `${instr(Q.order)}<div class="word-pt">${esc(pt)}</div><div class="order-line" id="line"></div><div class="order-bank" id="bank"></div>`;
         const line = $('line'), bank = $('bank');
         const picked = [];
-        shuffle(words).forEach(wd => {
+        let bankWords = shuffle(words);
+        if (bankWords.join(' ') === sentence && words.length > 1) bankWords = bankWords.reverse();
+        bankWords.forEach(wd => {
           const t = document.createElement('button');
           t.className = 'tile'; t.textContent = wd;
           t.onclick = () => {
@@ -306,27 +371,152 @@ export function runLesson(lesson, { teacher, playerName }) {
         footer('', '', label('Check', 'Verificar'), () => {
           const got = picked.map(c => c.textContent).join(' ');
           [...line.children, ...bank.children].forEach(b => b.onclick = null);
-          if (got === target) right();
-          else wrong(`<b>${esc(target)}</b>`);
+          if (got === sentence) { say(sentence); right(); }
+          else wrong(`<b>${esc(sentence)}</b>`);
         });
         upd();
       },
 
-      special({ lesson: id, q }) {
-        body.innerHTML = `${instr(Q[id])}<div class="word-card"><div class="pic" style="font-size:${q.show.length > 6 ? '3.4rem' : ''}">${q.show}</div></div>`;
-        let opts;
-        if (q.wrong) opts = [q.answer, ...q.wrong];
-        else {
-          const all = id === 'colors' ? ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'pink'] : ['one', 'two', 'three', 'four', 'five', 'six', 'seven'];
-          opts = [q.answer, ...shuffle(all.filter(a => a !== q.answer)).slice(0, 2)];
-        }
-        body.appendChild(wordChoices(q.answer, opts, ok => ok ? right() : wrong(`<b>${esc(q.answer)}</b>`)));
+      special({ sp, pool }) {
+        const q = sp.q || Q.pick;
+        const visual = sp.say ? `<div class="bubble-q">💬 "${esc(sp.say)}"</div><button class="small ghost" id="bA">🔊 ${label('Listen', 'Ouvir')}</button>`
+          : `<div class="word-card"><div class="pic" style="font-size:${sp.show.length > 6 ? '3.2rem' : ''}">${sp.show}</div></div>`;
+        body.innerHTML = `${instr(q)}${visual}`;
+        if (sp.say) { $('bA').onclick = () => say(sp.say); say(sp.say); }
+        const wrongs = sp.wrong || shuffle(pool.filter(x => x.en !== sp.answer)).slice(0, 2).map(x => x.en);
+        body.appendChild(choices(sp.answer, [sp.answer, ...wrongs], { onDone: ok => ok ? right() : wrong(`<b>${esc(sp.answer)}</b>`) }));
         footer('', '', null, null);
+      },
+
+      gcard({ card }) {
+        body.className = 'ls-body left';
+        body.innerHTML = `<div class="teacher-tip"><span class="face">${teacher}</span><div><b>🧩 ${esc(card.title)}</b></div></div>
+          <div class="gram-card">${card.html}</div>
+          <div class="examples">${card.examples.map((e, i) => `<button class="ex" data-i="${i}"><span>🔊</span><div><b>${esc(e.en)}</b><small>${esc(e.pt)}</small></div></button>`).join('')}</div>`;
+        body.querySelectorAll('.ex').forEach(b => b.onclick = () => say(card.examples[+b.dataset.i].en));
+        footer('', '', null, next);
+      },
+
+      gap({ g }) {
+        const parts = g.gap.split('___');
+        body.innerHTML = `${instr(Q.gap)}<div class="word-card"><div class="word-en phrase">${esc(parts[0])}<span class="blank" id="blank">____</span>${esc(parts[1] || '')}</div><div class="word-pt">${ptHtml(g.pt, '')}</div></div>`;
+        const full = g.gap.replace('___', g.a);
+        body.appendChild(choices(g.a, g.opts, {
+          speakAnswer: false,
+          onDone: ok => {
+            $('blank').textContent = g.a;
+            $('blank').classList.add(ok ? 'ok' : 'no');
+            say(full);
+            ok ? right(`<small>💡 ${esc(g.why)}</small>`) : wrong(`<b>${esc(full)}</b>`, g.why);
+          },
+        }));
+        footer('', '', null, null);
+      },
+
+      dialogue({ stage }) {
+        body.innerHTML = `${instr(Q.dialogue)}<div class="scene">🎬 ${esc(stage.scene.en)}<small>${esc(stage.scene.pt)}</small></div>
+          <div class="chat" id="chat"></div>
+          <div class="say-row"><button class="small" id="bAgain" disabled>🔁 ${label('Listen again', 'Ouvir de novo')}</button></div>`;
+        const chat = $('chat');
+        let token = 0;
+        const play = async () => {
+          const my = ++token;
+          chat.innerHTML = '';
+          $('bAgain').disabled = true;
+          for (const ln of stage.lines) {
+            if (my !== token || !chat.isConnected) return;
+            const p = PEOPLE[ln.who];
+            chat.insertAdjacentHTML('beforeend', bubble(p, ln, ln.who === stage.lines[0].who ? 'l' : 'r'));
+            chat.lastElementChild.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            await speak(ln.en, { voice: VOICES[ln.who] });
+            await new Promise(r => setTimeout(r, 250));
+          }
+          if (my !== token || !chat.isConnected) return;
+          $('bAgain').disabled = false;
+          footer('', '', null, next);
+        };
+        $('bAgain').onclick = () => { sfx.click(); play(); };
+        footer('', '', null, null);
+        play();
+      },
+
+      question({ q }) {
+        body.innerHTML = `<div class="ls-q">🎧 ${esc(q.q.en)}</div><div class="ls-qpt">${ptHtml(q.q.pt, '')}</div><button class="small ghost" id="bA">🔊</button>`;
+        $('bA').onclick = () => say(q.q.en);
+        say(q.q.en);
+        body.appendChild(choices(q.a, q.opts, { speakAnswer: false, onDone: ok => ok ? right() : wrong(`<b>${esc(q.a)}</b>`) }));
+        footer('', '', null, null);
+      },
+
+      talk({ turns, partner, scene }) {
+        const P = PEOPLE[partner];
+        body.innerHTML = `<div class="scene">🗣️ ${esc(scene.en)}<small>${esc(scene.pt)}</small></div><div class="chat" id="chat"></div><div class="talk-opts" id="opts"></div>`;
+        const chat = $('chat'), optsBox = $('opts');
+        footer('', '', null, null);
+        let i = 0;
+        const scroll = () => chat.lastElementChild?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        const npcSay = async (who, line) => {
+          chat.insertAdjacentHTML('beforeend', bubble(PEOPLE[who], { en: withName(line.en), pt: line.pt }, 'l'));
+          scroll();
+          await speak(withName(line.en), { voice: VOICES[who] });
+        };
+        const turn = async () => {
+          if (!chat.isConnected) return;
+          if (i >= turns.length) {
+            sfx.right();
+            footer('ok', `${label('Conversation complete!', 'Conversa completa!')} 🎉`, null, next);
+            return;
+          }
+          const t = turns[i];
+          const who = t.who || partner;
+          await npcSay(who, t);
+          if (!chat.isConnected) return;
+          if (!t.opts) { i++; return turn(); }
+          let missed = false;
+          optsBox.innerHTML = '';
+          for (const o of shuffle(t.opts)) {
+            const b = document.createElement('button');
+            b.className = 'choice talk-opt';
+            b.innerHTML = esc(withName(o.en)) + (o.pt ? `<small>${esc(o.pt)}</small>` : '');
+            b.onclick = async () => {
+              if (optsBox.dataset.busy) return;
+              if (!o.ok) {
+                sfx.wrong();
+                b.classList.add('wrong'); b.disabled = true;
+                mistakes++;
+                if (!missed) { missed = true; graded++; }
+                foot.className = 'ls-foot no';
+                fb.innerHTML = `💡 ${esc(o.why || label('Try another answer.', 'Tente outra resposta.'))}`;
+                return;
+              }
+              optsBox.dataset.busy = 1;
+              sfx.pop();
+              if (!missed) graded++;
+              if (o.save && onSave) onSave(o.save[0], o.save[1]);
+              foot.className = 'ls-foot'; fb.innerHTML = '';
+              optsBox.innerHTML = '';
+              chat.insertAdjacentHTML('beforeend', `<div class="bubble me"><div class="txt"><b>${esc(withName(o.en))}</b></div><div class="av">⭐</div></div>`);
+              scroll();
+              if (!o.en.includes('{name}')) await speak(o.en);
+              if (o.reply) await npcSay(who, o.reply);
+              delete optsBox.dataset.busy;
+              i++;
+              turn();
+            };
+            optsBox.appendChild(b);
+          }
+          optsBox.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        };
+        turn();
       },
     };
 
     next();
   });
+}
+
+function bubble(p, ln, side) {
+  return `<div class="bubble ${side}"><div class="av" title="${esc(p.name)}">${p.emoji}</div><div class="txt"><span class="who">${esc(p.name)}</span><b>${esc(ln.en)}</b>${ln.pt ? `<small>${ptHtml(ln.pt, '')}</small>` : ''}</div></div>`;
 }
 
 function micMsg(e) {

@@ -1,7 +1,7 @@
 // Word Run: o jogo fala uma palavra em inglês e você corre até o objeto certo.
 import * as THREE from 'three';
 import { makeGem, makeNumberBlock, makeFruit } from './models.js';
-import { LESSONS } from './content.js';
+import { WORDBANK } from './course.js';
 import { speak, sfx } from './audio.js';
 import { $, toast, label } from './ui.js';
 
@@ -61,7 +61,7 @@ export class WordRun {
   newRound() {
     this.clearItems();
     const cat = this.cats[Math.floor(Math.random() * this.cats.length)];
-    const words = LESSONS.find(l => l.id === cat).words.slice().sort(() => Math.random() - 0.5).slice(0, 4);
+    const words = WORDBANK[cat].slice().sort(() => Math.random() - 0.5).slice(0, 4);
     const spots = this.arena.spots
       .filter(s => s.distanceTo(this.mover.pos) > 1.8)
       .sort(() => Math.random() - 0.5).slice(0, 4);
