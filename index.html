@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Bichinhos English</title>
+  <meta name="description" content="Aprenda inglês do zero em um mundo 3D fofo: converse com bichinhos, faça missões e jogue minijogos.">
+  <meta name="theme-color" content="#bfe8ff">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="game"></div>
+
+  <!-- Tela de carregamento / título -->
+  <div id="title" class="screen">
+    <div class="panel title-panel">
+      <div class="logo">🐾</div>
+      <h1 id="gameName">Bichinhos <span>English</span></h1>
+      <p class="sub">Aprenda inglês brincando com bichinhos!</p>
+      <button id="btnPlay" class="big primary">▶ Jogar</button>
+      <button id="btnNew" class="big ghost hidden">✨ Começar de novo</button>
+      <p class="tiny">Use fones ou som ligado 🔊 — o jogo fala inglês com você.</p>
+    </div>
+  </div>
+
+  <!-- Criação de personagem -->
+  <div id="creator" class="hidden">
+    <div class="creator-box">
+      <h2>Crie seu bichinho</h2>
+      <div class="row" id="speciesRow"></div>
+      <div class="row colors" id="colorRow"></div>
+      <div class="row name-row">
+        <input id="nameInput" maxlength="12" placeholder="Nome do bichinho" autocomplete="off">
+        <button id="btnRandomName" class="small" title="Nome aleatório">🎲</button>
+      </div>
+      <button id="btnCreate" class="big primary">Começar! 🎉</button>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div class="card me">
+        <div class="avatar" id="hudAvatar">🐱</div>
+        <div class="me-info">
+          <div class="me-name" id="hudName">Kiki</div>
+          <div class="lvl-row"><span class="lvl" id="hudLevel">Nv 1</span><div class="xpbar"><div id="hudXp"></div></div></div>
+        </div>
+      </div>
+      <div id="goal" class="card goal"></div>
+      <div id="basket" class="card basket hidden"></div>
+    </div>
+    <div class="hud-right">
+      <div class="card pill" title="Moedas">💰 <b id="hudCoins">0</b></div>
+      <div class="card pill" title="Dias seguidos jogando">🔥 <b id="hudStreak">0</b></div>
+      <button id="btnMenu" class="card pill btn" title="Menu">☰</button>
+    </div>
+  </div>
+
+  <button id="interact" class="hidden"></button>
+  <div id="joyBase" class="hidden"><div id="joyKnob"></div></div>
+
+  <!-- Minijogo HUD -->
+  <div id="mgHud" class="hidden">
+    <div class="mg-top">
+      <div class="card pill">⏱ <b id="mgTime">60</b></div>
+      <div class="card pill">⭐ <b id="mgScore">0</b></div>
+    </div>
+    <button id="mgSay" class="mg-say">🔊 <span id="mgWord">?</span></button>
+    <button id="mgQuit" class="small ghost">Sair</button>
+  </div>
+  <div id="countdown" class="hidden"></div>
+
+  <!-- Diálogo com NPC -->
+  <div id="dialog" class="hidden">
+    <div class="dlg-box">
+      <div class="dlg-name" id="dlgName"></div>
+      <div class="dlg-text">
+        <div class="en" id="dlgEn"></div>
+        <div class="pt" id="dlgPt"></div>
+      </div>
+      <div class="dlg-btns" id="dlgBtns"></div>
+      <button class="dlg-say" id="dlgSay" title="Ouvir de novo">🔊</button>
+    </div>
+  </div>
+
+  <!-- Lição -->
+  <div id="lesson" class="hidden">
+    <div class="ls-top">
+      <button id="lsClose" class="icon-btn" title="Sair da lição">✕</button>
+      <div class="ls-progress"><div id="lsBar"></div></div>
+    </div>
+    <div class="ls-body" id="lsBody"></div>
+    <div class="ls-foot" id="lsFoot">
+      <div class="ls-feedback" id="lsFeedback"></div>
+      <button id="lsMain" class="big primary">Continuar</button>
+    </div>
+  </div>
+
+  <!-- Janelas genéricas (loja, menu, palavras, resultados) -->
+  <div id="modal" class="screen hidden">
+    <div class="panel" id="modalPanel"></div>
+  </div>
+
+  <div id="toasts"></div>
+  <div id="confetti"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
