@@ -567,7 +567,7 @@ async function talkBakery(n) {
   if (ok) {
     const reward = 40;
     await dialog({ name: n.name, voice: n.voice, lines: [
-      { en: LINES.bakeryYes(o), pt: `Isso! ${orderPt(o)}! Muito obrigada!` },
+      { en: LINES.bakeryYes(o), pt: `Isso! ${orderPt(o).replace(/^./, c => c.toUpperCase())}! Muito obrigada!` },
       THEME.job.pay,
     ] });
     S.order = null; S.missions++;

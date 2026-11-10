@@ -131,10 +131,9 @@ input:focus { border-color: var(--primary); }
 .dlg-btns button { font-size: 1.1rem; font-weight: 700; padding: 8px 18px; }
 
 /* PT escondido (nível alto): toque para ver */
-.pt-hidden { color: transparent !important; background: #efe6f3; border-radius: 8px; cursor: pointer; padding: 0 6px; display: inline-block; }
-.pt-hidden::before { content: '👁 ver tradução'; color: var(--ink-soft); font-size: .85rem; }
-.pt-hidden.show { color: var(--ink-soft) !important; background: none; padding: 0; }
-.pt-hidden.show::before { content: ''; }
+.pt-hidden { cursor: pointer; }
+.pt-hidden:not(.show) { font-size: 0 !important; background: #efe6f3; border-radius: 8px; padding: 2px 8px; display: inline-block; }
+.pt-hidden:not(.show)::before { content: '👁 ver tradução'; color: var(--ink-soft); font-size: .85rem; }
 
 /* ---------- Lição ---------- */
 #lesson { position: fixed; inset: 0; z-index: 40; background: linear-gradient(#fffaf3, #fff3f7); display: flex; flex-direction: column; padding-top: env(safe-area-inset-top); }
@@ -245,6 +244,9 @@ input:focus { border-color: var(--primary); }
   .pic { font-size: 4.4rem; }
   .choice .pic { font-size: 2.8rem; }
   .xpbar { width: 64px; }
+  /* celular em pé: moedas/menu em cima, cartão do jogador logo abaixo (não encavalam) */
+  .hud-left { top: calc(max(10px, env(safe-area-inset-top)) + 46px); max-width: calc(100% - 20px); }
+  .avatar { width: 36px; height: 36px; font-size: 1.5rem; }
   .goal { font-size: .88rem; }
   .sp-btn { width: 48px; height: 48px; font-size: 1.6rem; }
   .colors .sw { width: 32px; height: 32px; }
