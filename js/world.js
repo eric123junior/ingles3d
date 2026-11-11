@@ -3,8 +3,9 @@
 import * as THREE from 'three';
 import {
   toon, mesh, ball, makeTree, makeHouse, makeFlowerPatch, makeFence, makeSign, makeFruit,
-  makeNumberBlock, CYL, BOX, CONE, SPH,
+  makeNumberBlock, makeLabel, textCanvas, CYL, BOX, CONE, SPH,
 } from './models.js';
+import { makePerson } from './people.js';
 
 export const ISLAND_R = 34;
 
@@ -88,7 +89,7 @@ function windowTexture() {
   return winTex;
 }
 
-function makeBuilding(wall, roof, w = 4.4, d = 3.6, h = 5.6, door = true) {
+function makeBuilding(wall, roof, w = 4.4, d = 3.6, h = 5.6, door = true, doorColor = '#8a5a44') {
   const g = new THREE.Group();
   const walls = mesh(BOX, toon(wall), [0, h / 2, 0], [w, h, d]);
   walls.receiveShadow = true; g.add(walls);
@@ -100,7 +101,7 @@ function makeBuilding(wall, roof, w = 4.4, d = 3.6, h = 5.6, door = true) {
   win.position.set(0, 2.2 + rows * 0.7, d / 2 + 0.02);
   g.add(win);
   if (door) {
-    g.add(mesh(BOX, toon('#8a5a44'), [0, 0.8, d / 2 + 0.02], [1.0, 1.6, 0.08], false));
+    g.add(mesh(BOX, toon(doorColor), [0, 0.8, d / 2 + 0.02], [1.0, 1.6, 0.08], false));
     g.add(ball(toon('#ffd36b'), [0.3, 0.8, d / 2 + 0.08], 0.06, false));
     const aw = mesh(BOX, toon(roof), [0, 1.95, d / 2 + 0.45], [1.8, 0.08, 0.9]);
     aw.rotation.x = 0.3; g.add(aw);
@@ -181,6 +182,255 @@ function makeRainbow(r = 40) {
   return g;
 }
 
+// ---------- Nova York (Ellen) ----------
+// escada de incêndio na frente do prédio
+function makeFireEscape(w, h, d) {
+  const g = new THREE.Group();
+  const m = toon('#2f2a36');
+  for (let y = 2.6; y < h - 0.6; y += 1.6) {
+    g.add(mesh(BOX, m, [0, y, d / 2 + 0.45], [w * 0.55, 0.06, 0.9], false));
+    g.add(mesh(BOX, m, [0, y + 0.45, d / 2 + 0.88], [w * 0.55, 0.05, 0.05], false));
+    for (let k = 0; k < 5; k++) g.add(mesh(BOX, m, [-w * 0.27 + k * w * 0.135, y + 0.22, d / 2 + 0.88], [0.04, 0.45, 0.04], false));
+    const st = mesh(BOX, m, [0, y + 0.8, d / 2 + 0.45], [0.18, 1.7, 0.06], false);
+    st.rotation.z = 0.9; g.add(st);
+  }
+  return g;
+}
+
+// o sofá laranja (Central Perk)
+function makeCouch() {
+  const g = new THREE.Group();
+  const m = toon('#e07a2e'), legs = toon('#5a3a2a');
+  g.add(mesh(BOX, m, [0, 0.42, 0], [2.4, 0.32, 0.95]));
+  g.add(mesh(BOX, m, [0, 0.85, -0.38], [2.4, 0.7, 0.24]));
+  for (const s of [-1, 1]) g.add(mesh(BOX, m, [s * 1.2, 0.62, 0], [0.24, 0.48, 0.95]));
+  for (let i = 0; i < 3; i++) g.add(ball(toon('#ef8d40'), [-0.78 + i * 0.78, 0.62, 0.05], [0.37, 0.09, 0.4], false));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(mesh(CYL, legs, [sx * 1.1, 0.13, sz * 0.38], [0.06, 0.26, 0.06], false));
+  return g;
+}
+
+// fachada do Central Perk: tijolo, vitrine grande e letreiro verde
+function makeCafe(w = 6.4, d = 4.2, h = 4.6) {
+  const g = makeBuilding('#7a4a34', '#4a2f22', w, d, h, false);
+  g.add(mesh(BOX, toon('#2f5a40'), [0, 1.3, d / 2 + 0.03], [w * 0.92, 2.6, 0.06], false));
+  for (const s of [-1, 1]) {
+    g.add(mesh(BOX, toon('#bfe9ff'), [s * w * 0.27, 1.35, d / 2 + 0.08], [w * 0.34, 1.7, 0.04], false));
+    g.add(mesh(BOX, toon('#f6e7c8'), [s * w * 0.27, 1.35, d / 2 + 0.11], [0.06, 1.7, 0.03], false));
+  }
+  g.add(mesh(BOX, toon('#5a3a2a'), [0, 1.0, d / 2 + 0.08], [1.1, 2.0, 0.05], false));
+  const tex = textCanvas(['Central Perk'], { w: 512, h: 128, bg: '#2f5a40', fg: '#f6e7c8', border: '#f6e7c8', font: 70, radius: 18 });
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 0.9), new THREE.MeshBasicMaterial({ map: tex }));
+  sign.position.set(0, 2.95, d / 2 + 0.1);
+  g.add(sign);
+  const aw = mesh(BOX, toon('#2f5a40'), [0, 2.35, d / 2 + 0.55], [w * 0.95, 0.08, 1.1]);
+  aw.rotation.x = 0.3; g.add(aw);
+  return g;
+}
+
+function makeTaxi() {
+  const g = new THREE.Group();
+  const y = toon('#ffc928'), dark = toon('#2f2a36');
+  g.add(mesh(BOX, y, [0, 0.5, 0], [1.3, 0.5, 2.6]));
+  g.add(mesh(BOX, y, [0, 0.95, -0.1], [1.15, 0.45, 1.4]));
+  g.add(mesh(BOX, toon('#bfe9ff'), [0, 0.98, 0.6], [1.05, 0.34, 0.04], false));
+  g.add(mesh(BOX, toon('#bfe9ff'), [0, 0.98, -0.8], [1.05, 0.34, 0.04], false));
+  g.add(mesh(BOX, toon('#ffffff'), [0, 1.27, -0.1], [0.5, 0.16, 0.22], false));
+  g.add(mesh(BOX, dark, [0, 0.55, 0], [1.32, 0.08, 2.62], false));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+    const wh = mesh(CYL, dark, [sx * 0.62, 0.25, sz * 0.85], [0.25, 0.16, 0.25]);
+    wh.rotation.z = Math.PI / 2; g.add(wh);
+  }
+  for (const sx of [-1, 1]) g.add(ball(toon('#fff4b0'), [sx * 0.42, 0.55, 1.31], 0.09, false));
+  return g;
+}
+
+function makeFoosball() {
+  const g = new THREE.Group();
+  g.add(mesh(BOX, toon('#5a3a2a'), [0, 0.7, 0], [1.1, 0.3, 1.8]));
+  g.add(mesh(BOX, toon('#3fa34d'), [0, 0.86, 0], [0.95, 0.02, 1.65], false));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(mesh(BOX, toon('#5a3a2a'), [sx * 0.45, 0.28, sz * 0.75], [0.12, 0.56, 0.12]));
+  for (let i = 0; i < 4; i++) {
+    const z = -0.6 + i * 0.4;
+    const rod = mesh(CYL, toon('#c9c2d6'), [0, 0.95, z], [0.02, 1.6, 0.02], false);
+    rod.rotation.z = Math.PI / 2; g.add(rod);
+    for (let k = -1; k <= 1; k++) g.add(ball(toon(i % 2 ? '#3b82f6' : '#ef4444'), [k * 0.28, 0.93, z], [0.05, 0.1, 0.05], false));
+  }
+  return g;
+}
+
+function makeHydrant() {
+  const g = new THREE.Group();
+  const r = toon('#e2403a');
+  g.add(mesh(CYL, r, [0, 0.3, 0], [0.16, 0.6, 0.16]));
+  g.add(ball(r, [0, 0.62, 0], 0.17));
+  for (const s of [-1, 1]) { const n = mesh(CYL, r, [s * 0.18, 0.4, 0], [0.07, 0.14, 0.07], false); n.rotation.z = Math.PI / 2; g.add(n); }
+  return g;
+}
+
+function makeHotDogCart() {
+  const g = new THREE.Group();
+  g.add(mesh(BOX, toon('#d9d4e8'), [0, 0.75, 0], [1.6, 0.8, 0.9]));
+  g.add(mesh(BOX, toon('#e2403a'), [0, 0.95, 0.46], [1.6, 0.3, 0.02], false));
+  for (const s of [-1, 1]) { const w = mesh(CYL, toon('#2f2a36'), [s * 0.55, 0.25, 0.48], [0.25, 0.08, 0.25]); w.rotation.x = Math.PI / 2; g.add(w); }
+  g.add(mesh(CYL, toon('#9aa3b2'), [0.6, 1.5, 0], [0.03, 1.2, 0.03], false));
+  for (let i = 0; i < 6; i++) g.add(mesh(BOX, toon(i % 2 ? '#ffffff' : '#ffd54d'), [-0.15 + i * 0.25 - 0.5, 2.1, 0], [0.25, 0.06, 1.6]));
+  return g;
+}
+
+// prédio bem alto com antena, ao longe
+function makeSkyTower() {
+  const g = new THREE.Group();
+  const m = toon('#c9c2d6');
+  g.add(mesh(BOX, m, [0, 6, 0], [4, 12, 4]));
+  g.add(mesh(BOX, m, [0, 14, 0], [3, 4, 3]));
+  g.add(mesh(BOX, m, [0, 17.5, 0], [2, 3, 2]));
+  g.add(mesh(BOX, m, [0, 19.8, 0], [1.2, 1.6, 1.2]));
+  g.add(mesh(CYL, toon('#9aa3b2'), [0, 22.5, 0], [0.12, 4, 0.12]));
+  return g;
+}
+
+// ---------- Bíblia (Carla) ----------
+// boneco parado com nome em cima (Maria, José, Noé, Davi...)
+function makeFigure(look, name, labelY = 2.25) {
+  const p = makePerson(look);
+  if (name) { const tag = makeLabel(name, { size: 1.3 }); tag.position.y = labelY; p.root.add(tag); }
+  return p.root;
+}
+
+function makeStable() {
+  const g = new THREE.Group();
+  const wood = toon('#9a6a46'), dark = toon('#6b4a36');
+  g.add(mesh(BOX, wood, [0, 1.4, -1.4], [5, 2.8, 0.2]));
+  for (const s of [-1, 1]) g.add(mesh(BOX, wood, [s * 2.4, 1.4, -0.3], [0.2, 2.8, 2.4]));
+  for (const sx of [-1, 1]) g.add(mesh(CYL, dark, [sx * 2.4, 1.5, 1.0], [0.12, 3, 0.12]));
+  const roof = mesh(BOX, toon('#c9a063'), [0, 3.05, -0.2], [5.6, 0.16, 3.2]);
+  roof.rotation.x = -0.18; g.add(roof);
+  for (let i = 0; i < 6; i++) g.add(ball(toon('#e9c46a'), [-2 + i * 0.8, 0.12, -0.6 + (i % 2) * 0.5], [0.4, 0.12, 0.3], false)); // palha
+  // manjedoura com o bebê
+  const crib = new THREE.Group();
+  crib.add(mesh(BOX, dark, [0, 0.45, 0], [1.0, 0.3, 0.55]));
+  for (const s of [-1, 1]) { const l = mesh(BOX, dark, [s * 0.4, 0.22, 0], [0.08, 0.5, 0.5]); l.rotation.z = s * 0.3; crib.add(l); }
+  crib.add(ball(toon('#e9c46a'), [0, 0.62, 0], [0.45, 0.08, 0.24], false));
+  crib.add(ball(toon('#fffaf0'), [0, 0.7, 0], [0.28, 0.12, 0.14], false));
+  crib.add(ball(toon('#e0b08a'), [0.2, 0.74, 0], 0.09, false));
+  crib.position.set(0, 0, 0.1);
+  g.add(crib);
+  // estrela de Belém
+  const star = new THREE.Group();
+  for (let k = 0; k < 4; k++) { const r = mesh(CONE, toon('#ffe066'), [0, 0, 0], [0.18, 0.9, 0.1], false); r.rotation.z = k * Math.PI / 2; star.add(r); }
+  star.add(ball(toon('#fff4b0'), [0, 0, 0], 0.22, false));
+  star.position.set(0, 4.6, 0);
+  g.add(star);
+  g.userData.star = star;
+  return g;
+}
+
+function makeCamel() {
+  const g = new THREE.Group();
+  const m = toon('#d9a066');
+  g.add(ball(m, [0, 1.25, 0], [0.45, 0.4, 0.85]));
+  g.add(ball(m, [0, 1.62, -0.15], [0.32, 0.3, 0.38]));
+  const neck = mesh(CYL, m, [0, 1.65, 0.85], [0.14, 0.9, 0.14]); neck.rotation.x = 0.55; g.add(neck);
+  g.add(ball(m, [0, 2.05, 1.2], [0.18, 0.17, 0.3]));
+  g.add(ball(toon('#2b2233'), [0.12, 2.12, 1.28], 0.03, false), ball(toon('#2b2233'), [-0.12, 2.12, 1.28], 0.03, false));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(mesh(CYL, m, [sx * 0.25, 0.5, sz * 0.5], [0.07, 1.0, 0.07]));
+  g.add(mesh(BOX, toon('#c8553d'), [0, 1.62, 0.25], [0.7, 0.05, 0.5], false));
+  return g;
+}
+
+function makeBoat() {
+  const g = new THREE.Group();
+  const wood = toon('#8a5a3a');
+  g.add(mesh(BOX, wood, [0, 0.35, 0], [1.6, 0.6, 4]));
+  for (const s of [-1, 1]) { const c = mesh(CONE, wood, [0, 0.35, s * 2.4], [0.8, 0.8, 0.3]); c.rotation.x = s * Math.PI / 2; g.add(c); }
+  g.add(mesh(CYL, toon('#6b4a36'), [0, 2.0, 0.3], [0.07, 3.2, 0.07]));
+  const sail = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 2.2), toon('#fff4e0', { side: THREE.DoubleSide }));
+  sail.position.set(0, 2.2, 0.32); sail.rotation.y = Math.PI / 2; g.add(sail);
+  // rede de pesca
+  g.add(ball(toon('#d8c4a0'), [0.5, 0.75, -1.2], [0.35, 0.18, 0.5], false));
+  return g;
+}
+
+// muralha de pedra com portão em arco (Jerusalém, ao longe)
+function makeCityWall() {
+  const g = new THREE.Group();
+  const st = toon('#e3cf9f'), top = toon('#cdb37f');
+  for (const s of [-1, 1]) {
+    g.add(mesh(BOX, st, [0, 2.2, s * 6.5], [1.4, 4.4, 9]));
+    for (let i = 0; i < 6; i++) g.add(mesh(BOX, top, [0, 4.65, s * (2.6 + i * 1.6)], [1.5, 0.5, 0.8]));
+    g.add(mesh(BOX, st, [0, 3, s * 2.4], [2.2, 6, 1.8]));
+  }
+  g.add(mesh(BOX, st, [0, 5.0, 0], [1.4, 1.6, 3.2]));
+  const arch = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.3, 8, 16, Math.PI), top);
+  arch.position.set(0.72, 4.15, 0); arch.rotation.y = Math.PI / 2; g.add(arch);
+  return g;
+}
+
+// ---------- Jardim botânico (Eric) ----------
+function makeGreenhouse(wall, roof) {
+  const g = new THREE.Group();
+  const w = 4.4, d = 3.6, h = 2.4;
+  const glass = toon('#cfeff6', { transparent: true, opacity: 0.45 });
+  const frame = toon('#ffffff');
+  g.add(mesh(BOX, glass, [0, h / 2, 0], [w, h, d], false));
+  const shape = new THREE.Shape();
+  shape.moveTo(-w / 2, 0); shape.lineTo(w / 2, 0); shape.lineTo(0, 1.4); shape.lineTo(-w / 2, 0);
+  const rg = new THREE.ExtrudeGeometry(shape, { depth: d, bevelEnabled: false }); rg.translate(0, 0, -d / 2);
+  const r = new THREE.Mesh(rg, glass); r.position.y = h; g.add(r);
+  for (const sx of [-1, -0.5, 0, 0.5, 1]) for (const sz of [-1, 1]) g.add(mesh(BOX, frame, [sx * w / 2, h / 2, sz * d / 2], [0.07, h, 0.07], false));
+  for (const sz of [-1, 1]) g.add(mesh(BOX, frame, [0, h, sz * d / 2], [w, 0.07, 0.07], false));
+  g.add(mesh(BOX, frame, [0, h + 1.4, 0], [0.08, 0.08, d], false));
+  // plantas lá dentro
+  for (let i = 0; i < 6; i++) {
+    const x = -1.6 + (i % 3) * 1.6, z = i < 3 ? -0.9 : 0.7;
+    g.add(mesh(BOX, toon('#8a6248'), [x, 0.35, z], [1.2, 0.7, 0.6], false));
+    g.add(ball(toon(['#5fb85a', '#7ccf6b', '#4aa35a'][i % 3]), [x, 0.95, z], [0.55, 0.4, 0.3], false));
+    g.add(ball(toon(['#ff8fab', '#ffd54d', '#b8a4ff'][i % 3]), [x + 0.2, 1.25, z + 0.1], 0.12, false));
+  }
+  g.add(mesh(BOX, toon(roof), [0, 0.9, d / 2 + 0.02], [1.0, 1.8, 0.06], false));
+  return g;
+}
+
+function makePond() {
+  const g = new THREE.Group();
+  const water = new THREE.Mesh(new THREE.CircleGeometry(3.2, 32), toon('#74cdea'));
+  water.rotation.x = -Math.PI / 2; water.position.y = 0.04; g.add(water);
+  for (let i = 0; i < 18; i++) {
+    const a = i / 18 * Math.PI * 2;
+    g.add(ball(toon('#c9c2d6'), [Math.cos(a) * 3.3, 0.12, Math.sin(a) * 3.3], [0.45, 0.22, 0.35], false));
+  }
+  [[1, 0.6], [-1.2, -0.4], [0.2, -1.5], [-0.4, 1.4], [1.6, -1.0]].forEach(([x, z], i) => {
+    g.add(mesh(CYL, toon('#5fb85a'), [x, 0.07, z], [0.42, 0.02, 0.42], false));
+    if (i % 2 === 0) g.add(ball(toon('#ff9ebb'), [x + 0.1, 0.18, z], [0.16, 0.12, 0.16], false));
+  });
+  // sapinho
+  g.add(ball(toon('#58b060'), [-1.2, 0.2, -0.4], [0.16, 0.12, 0.14]));
+  g.add(ball(toon('#ffffff'), [-1.25, 0.3, -0.33], 0.04, false), ball(toon('#ffffff'), [-1.15, 0.3, -0.33], 0.04, false));
+  return g;
+}
+
+function makeMower() {
+  const g = new THREE.Group();
+  g.add(mesh(BOX, toon('#e2403a'), [0, 0.35, 0], [0.8, 0.3, 0.9]));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const w = mesh(CYL, toon('#2f2a36'), [sx * 0.42, 0.15, sz * 0.32], [0.15, 0.08, 0.15]); w.rotation.z = Math.PI / 2; g.add(w); }
+  for (const s of [-1, 1]) { const h = mesh(CYL, toon('#9aa3b2'), [s * 0.3, 0.75, -0.75], [0.03, 1.1, 0.03], false); h.rotation.x = -0.75; g.add(h); }
+  g.add(mesh(CYL, toon('#2f2a36'), [0, 1.15, -1.15], [0.03, 0.66, 0.03], false).rotateZ(Math.PI / 2));
+  return g;
+}
+
+// árvore grande com corda e escada (trabalho do podador)
+function makeBigOak() {
+  const g = new THREE.Group();
+  g.add(makeTree(0, 2.3));
+  g.add(mesh(CYL, toon('#f0d58a'), [1.3, 2.0, 0.4], [0.025, 4.0, 0.025], false));
+  const ld = new THREE.Group();
+  for (const sx of [-1, 1]) ld.add(mesh(BOX, toon('#d9a066'), [sx * 0.3, 1.6, 0], [0.07, 3.2, 0.07]));
+  for (let i = 0; i < 8; i++) ld.add(mesh(BOX, toon('#d9a066'), [0, 0.3 + i * 0.4, 0], [0.6, 0.06, 0.06]));
+  ld.rotation.x = 0.3; ld.position.set(-0.2, 0, 1.0);
+  g.add(ld);
+  return g;
+}
+
 // enfeite gigante no teto da "padaria" de cada tema
 function makeRoofIcon(style) {
   const g = new THREE.Group();
@@ -245,18 +495,32 @@ export function buildWorld(scene, theme) {
   scene.add(plaza);
   reserve(0, 0, 8);
 
-  // ---------- Fonte ----------
-  const fountain = new THREE.Group();
-  fountain.add(mesh(CYL, toon('#d9d4e8'), [0, 0.3, 0], [2.4, 0.6, 2.4]));
-  const pool = mesh(CYL, toon('#8fdcff'), [0, 0.55, 0], [2.05, 0.1, 2.05], false);
-  fountain.add(pool);
-  fountain.add(mesh(CYL, toon('#d9d4e8'), [0, 1.1, 0], [0.35, 1.2, 0.35]));
-  fountain.add(mesh(CYL, toon('#d9d4e8'), [0, 1.7, 0], [1.0, 0.18, 1.0]));
-  const spout = ball(toon('#bfeeff'), [0, 2.1, 0], [0.35, 0.5, 0.35], false);
-  fountain.add(spout);
-  scene.add(fountain);
+  // ---------- Fonte (na vila bíblica: um oásis com palmeiras) ----------
+  if (style === 'bible') {
+    const oasis = new THREE.Group();
+    const pool = new THREE.Mesh(new THREE.CircleGeometry(2.2, 32), toon('#6ec6e4'));
+    pool.rotation.x = -Math.PI / 2; pool.position.y = 0.05; oasis.add(pool);
+    for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2; oasis.add(ball(toon('#d8c4a0'), [Math.cos(a) * 2.35, 0.15, Math.sin(a) * 2.35], [0.45, 0.28, 0.38])); }
+    [0.4, 2.5, 4.4].forEach((a, i) => { const p = makePalm(0.9 + i * 0.12); p.position.set(Math.cos(a) * 2.2, 0, Math.sin(a) * 2.2); oasis.add(p); });
+    scene.add(oasis);
+  } else {
+    const fountain = new THREE.Group();
+    fountain.add(mesh(CYL, toon('#d9d4e8'), [0, 0.3, 0], [2.4, 0.6, 2.4]));
+    const pool = mesh(CYL, toon('#8fdcff'), [0, 0.55, 0], [2.05, 0.1, 2.05], false);
+    fountain.add(pool);
+    fountain.add(mesh(CYL, toon('#d9d4e8'), [0, 1.1, 0], [0.35, 1.2, 0.35]));
+    fountain.add(mesh(CYL, toon('#d9d4e8'), [0, 1.7, 0], [1.0, 0.18, 1.0]));
+    const spout = ball(toon('#bfeeff'), [0, 2.1, 0], [0.35, 0.5, 0.35], false);
+    fountain.add(spout);
+    scene.add(fountain);
+    anim.push(t => { spout.scale.y = 0.5 + Math.sin(t * 4) * 0.08; });
+  }
   addCol(0, 0, 2.7);
-  anim.push(t => { spout.scale.y = 0.5 + Math.sin(t * 4) * 0.08; });
+  if (style === 'city') { // o sofá laranja na frente da fonte (como na abertura da série)
+    const couch = makeCouch();
+    couch.position.set(0, 0, 3.6);
+    scene.add(couch); addCol(0, 3.6, 1.2);
+  }
 
   // ---------- Estações ----------
   const stations = {};
@@ -291,8 +555,12 @@ export function buildWorld(scene, theme) {
     return h;
   };
   const MAKE = {
-    city: { greet: (w, r) => makeBuilding(w, r), colors: (w, r) => makeBuilding(w, r, 4.4, 3.6, 4.2) },
+    city: {
+      greet: (w, r) => { const b = makeBuilding(w, r, 4.4, 3.6, 7.2, true, '#7a4fa0'); b.add(makeFireEscape(4.4, 7.2, 3.6)); return b; }, // porta roxa
+      colors: (w, r) => makeBuilding(w, r, 4.4, 3.6, 4.2),
+    },
     bible: { greet: chapel, colors: (w, r) => makeTent(w, r) },
+    garden: { greet: makeGreenhouse },
   }[style] || {};
   const hGreet = houseStation('greet', -16, -7, MAKE.greet);
   const hColors = houseStation('colors', 16, -7, MAKE.colors);
@@ -339,7 +607,6 @@ export function buildWorld(scene, theme) {
         pot.position.copy(g0.pos).addScaledVector(d0, 2.3).addScaledVector(s0, -3.2 + i * 0.55);
         pot.scale.setScalar(1.25); scene.add(pot);
       });
-      hGreet.add(mesh(BOX, toon('#ffffff'), [0, 2.0, 1.83], [3.6, 0.07, 0.05], false), mesh(BOX, toon('#ffffff'), [0, 1.2, 1.83], [3.6, 0.07, 0.05], false));
     }
     if (style === 'city') { // estúdio: estrela no teto
       const star = ball(toon('#ffd54d'), [0, 5.1, 0.6], [0.5, 0.5, 0.18]);
@@ -377,15 +644,8 @@ export function buildWorld(scene, theme) {
         deco.add(mesh(BOX, toon('#c99368'), [0, 0.55, 0], [2.2, 0.1, 0.9]));
         for (const sx of [-1, 1]) deco.add(mesh(BOX, toon('#8a6248'), [sx * 0.95, 0.27, 0], [0.1, 0.54, 0.8]));
         ['#ff8fab', null, '#ffd54d', null, '#b8a4ff'].forEach((c, i) => { const pt = makePot(c); pt.position.set(-0.84 + i * 0.42, 0.6, 0); deco.add(pt); });
-      } else if (style === 'city') { // dado gigante
-        deco = new THREE.Group();
-        const die = mesh(BOX, toon('#ffffff'), [0, 0.6, 0], [1.1, 1.1, 1.1]);
-        deco.add(die);
-        [[0, 0], [-0.28, 0.28], [0.28, -0.28]].forEach(([dx, dy]) => deco.add(ball(toon('#ef4444'), [dx, 0.6 + dy, 0.56], 0.09, false)));
-        [[-0.25, 0], [0.25, 0]].forEach(([dx]) => deco.add(ball(toon('#3b82f6'), [dx, 1.16, 0], 0.09, false)));
-        deco.rotation.y = 0.5;
-      }
-      if (deco) { deco.position.set(ox, 0, oz); if (style !== 'city') face(deco, 0, 0); scene.add(deco); addCol(ox, oz, 1.1); }
+      } else if (style === 'city') deco = makeFoosball(); // pebolim
+      if (deco) { deco.position.set(ox, 0, oz); face(deco, 0, 0); scene.add(deco); addCol(ox, oz, 1.1); }
     }
     const sign = makeSign(...SIGN.numbers);
     sign.position.set(cx + dir.x * 4.6 + dir.z * 3, 0, cz + dir.z * 4.6 - dir.x * 3);
@@ -448,18 +708,18 @@ export function buildWorld(scene, theme) {
   {
     const bx = 0, bz = -21;
     const [bw, br] = theme.houses.bakery;
-    const h = style === 'bible' ? makeFlatHouse(bw, br, 6, 4.2, 3) : makeHouse(bw, br, 6, 4.2, 3);
+    const h = style === 'bible' ? makeFlatHouse(bw, br, 6, 4.2, 3) : style === 'city' ? makeCafe() : makeHouse(bw, br, 6, 4.2, 3);
     h.position.set(bx, 0, bz); scene.add(h);
     addCol(bx - 1.6, bz, 2.6); addCol(bx + 1.6, bz, 2.6);
     // toldo listrado
-    const awn = { garden: '#7ccf6b', city: '#b5654a', bible: '#c8553d' }[style] || '#ff8fab';
-    if (style !== 'bible') for (let i = 0; i < 6; i++) {
+    const awn = { garden: '#7ccf6b', bible: '#c8553d' }[style] || '#ff8fab';
+    if (style !== 'bible' && style !== 'city') for (let i = 0; i < 6; i++) {
       const s = mesh(BOX, toon(i % 2 ? '#ffffff' : awn), [bx - 2.5 + i, 2.3, bz + 2.6], [1, 0.08, 1.2]);
       s.rotation.x = 0.35; scene.add(s);
     }
     // enfeite gigante no teto (pão, flor, xícara...)
     const bread = makeRoofIcon(style);
-    bread.position.set(bx, style === 'bible' ? 3.9 : 4.9, bz + 0.6);
+    bread.position.set(bx, { bible: 3.9, city: 5.7 }[style] || 4.9, bz + 0.6);
     if (style === 'city' || style === 'garden') bread.scale.setScalar(1.5);
     scene.add(bread);
     anim.push(t => { bread.rotation.y = Math.sin(t) * 0.3; });
@@ -594,6 +854,8 @@ export function buildWorld(scene, theme) {
       t.position.set(-56 + Math.cos(a) * r, 0, Math.sin(a) * r);
       scene.add(t);
     }
+    if (style === 'bible') { const wall = makeCityWall(); wall.position.set(-43.2, 0, 0); scene.add(wall); }
+    if (style === 'city') [[-60, -5, 1], [-52, 7, 0.75]].forEach(([x, z, s]) => { const tw = makeSkyTower(); tw.position.set(x, 0, z); tw.scale.setScalar(s); scene.add(tw); });
     gate.mesh = gg;
     reserve(-30, 0, 4);
   }
@@ -613,6 +875,72 @@ export function buildWorld(scene, theme) {
     return true;
   };
   const ringSpot = (a, r) => [Math.cos(a) * r, Math.sin(a) * r];
+  // coloca um objeto num lugar livre (entre os raios r0 e r1 da ilha)
+  const placeFree = (obj, rad, r0 = 8, r1 = ISLAND_R - 4) => {
+    for (let k = 0; k < 120; k++) {
+      const [x, z] = ringSpot(R() * Math.PI * 2, r0 + R() * (r1 - r0));
+      if (!free(x, z, rad)) continue;
+      obj.position.set(x, 0, z); obj.rotation.y = R() * 6;
+      scene.add(obj); addCol(x, z, rad);
+      return obj;
+    }
+    return null;
+  };
+
+  // ---------- Detalhes de cada tema ----------
+  if (style === 'city') { // Nova York: avenida em volta da praça, táxis, hidrantes, carrinho de cachorro-quente
+    const road = new THREE.Mesh(new THREE.RingGeometry(8.7, 10.4, 72), toon('#6f747c'));
+    road.rotation.x = -Math.PI / 2; road.position.y = 0.016; road.receiveShadow = true; scene.add(road);
+    for (let i = 0; i < 28; i++) {
+      const a = i / 28 * Math.PI * 2;
+      const dash = mesh(BOX, toon('#ffffff'), [Math.cos(a) * 9.55, 0.03, Math.sin(a) * 9.55], [0.12, 0.02, 0.8], false);
+      dash.rotation.y = -a; scene.add(dash);
+    }
+    for (let i = 0; i < 24; i++) { const [x, z] = ringSpot(i / 24 * Math.PI * 2, 9.55); reserve(x, z, 0.9); }
+    // táxis andando pela avenida
+    [0, Math.PI].forEach((a0, i) => {
+      const taxi = makeTaxi(); scene.add(taxi);
+      const r = i ? 9.1 : 10.0, dir = i ? -1 : 1;
+      anim.push(t => {
+        const a = a0 + t * 0.22 * dir;
+        taxi.position.set(Math.cos(a) * r, 0, Math.sin(a) * r);
+        taxi.rotation.y = -a + (dir > 0 ? Math.PI : 0);
+      });
+    });
+    for (let i = 0; i < 3; i++) placeFree(makeTaxi(), 1.5, 12, ISLAND_R - 6);
+    for (let i = 0; i < 5; i++) placeFree(makeHydrant(), 0.4, 11, ISLAND_R - 5);
+    placeFree(makeHotDogCart(), 1.1, 11, 16);
+  }
+  if (style === 'bible') { // presépio, Davi e Golias, camelos, barco de pescador, Noé na arca
+    const stable = makeStable();
+    stable.position.set(14, 0, -23); face(stable, 0, 0);
+    const mary = makeFigure({ skin: '#e0b08a', hair: '#3a2418', head: 'veil', headColor: '#6ea8de', robe: '#e9f0fa', sash: '#6ea8de' }, 'Mary');
+    mary.position.set(-0.9, 0, 0.5); mary.rotation.y = 0.9; stable.add(mary);
+    const joseph = makeFigure({ skin: '#d4a07a', hair: '#4a3020', head: 'headcloth', headColor: '#c9a063', band: '#6b4a36', beard: '#4a3020', robe: '#8a6248', sash: '#e9c46a', extras: ['staff'] }, 'Joseph');
+    joseph.position.set(1.0, 0, 0.4); joseph.rotation.y = -0.9; stable.add(joseph);
+    const baby = makeLabel('Baby Jesus', { size: 1.2 }); baby.position.set(0, 1.35, 0.1); stable.add(baby);
+    const sh = makeSheep(); sh.position.set(1.8, 0, 1.3); stable.add(sh);
+    scene.add(stable); addCol(14, -23, 3); reserve(14, -23, 5);
+    anim.push(t => { stable.userData.star.rotation.z = Math.sin(t) * 0.2; stable.userData.star.scale.setScalar(1 + Math.sin(t * 3) * 0.08); });
+
+    const goliath = makeFigure({ skin: '#d4a07a', hair: '#2b1d17', hairStyle: 'curly', beard: '#2b1d17', robe: '#8a8f99', sash: '#5a4636', extras: ['staff'], scale: 2.3 });
+    goliath.position.set(26, 0, -3); face(goliath, 0, 0); scene.add(goliath); addCol(26, -3, 1.2); reserve(26, -3, 3);
+    const gTag = makeLabel('Goliath', { size: 1.4 }); gTag.position.set(26, 5.0, -3); scene.add(gTag);
+    const david = makeFigure({ skin: '#e0b08a', hair: '#9a4a2a', hairStyle: 'curly', robe: '#efe4cc', sash: '#6b8f5a', scale: 0.82 }, 'David', 2.6);
+    david.position.set(23.2, 0, -1.6); face(david, 26, -3); scene.add(david); addCol(23.2, -1.6, 0.5);
+
+    for (let i = 0; i < 3; i++) placeFree(makeCamel(), 1.0, 10, ISLAND_R - 5);
+    const boat = makeBoat();
+    boat.position.set(40, -0.3, -16); boat.rotation.y = 0.4; scene.add(boat);
+    const peter = makeFigure({ skin: '#c98f6a', hair: '#4a3020', hairStyle: 'curly', beard: '#4a3020', robe: '#6b8f9a', sash: '#a0714f' }, 'Peter');
+    peter.position.set(0, 0.65, -0.6); boat.add(peter);
+    anim.push(t => { boat.position.y = -0.3 + Math.sin(t * 1.1) * 0.1; boat.rotation.z = Math.sin(t * 0.8) * 0.04; });
+  }
+  if (style === 'garden') { // lago com vitórias-régias, árvore grande do podador, cortador de grama
+    const pond = makePond(); pond.position.set(14, 0, -23); scene.add(pond); addCol(14, -23, 3.4); reserve(14, -23, 4.2);
+    const oak = makeBigOak(); oak.position.set(-23, 0, -20); oak.rotation.y = 0.8; scene.add(oak); addCol(-23, -20, 1.0); reserve(-23, -20, 3.5);
+    placeFree(makeMower(), 0.8, 9, 15);
+  }
   if (style === 'city') { // prédios em volta do bairro
     const cols = ['#ffd9c2', '#d6ecff', '#fff3c4', '#e7e1ff', '#dcf7e8', '#ffe2ea'];
     for (let i = 0; i < 18; i++) {
@@ -654,6 +982,8 @@ export function buildWorld(scene, theme) {
       anim.push(t => { sh.position.y = Math.max(0, Math.sin(t * 2.2 + k * 1.7)) * 0.06; });
     }
     const ark = makeArk();
+    const noah = makeFigure({ skin: '#d4a07a', hair: '#f1ede6', head: 'headcloth', headColor: '#f3ead8', band: '#8a6248', beard: '#f1ede6', robe: '#8a6a9a', sash: '#e9c46a', extras: ['staff'], scale: 1.4 }, 'Noah');
+    noah.position.set(3.6, 1.9, 0); noah.rotation.y = Math.PI / 2; ark.add(noah);
     ark.position.set(14, -0.6, -52); ark.rotation.y = 0.35;
     scene.add(ark);
     anim.push(t => { ark.position.y = -0.6 + Math.sin(t * 0.9) * 0.12; ark.rotation.z = Math.sin(t * 0.7) * 0.03; });
@@ -678,14 +1008,14 @@ export function buildWorld(scene, theme) {
     scene.add(t); addCol(x, z, 0.6);
     placed++;
   }
-  for (let i = 0; i < ({ garden: 60, bible: 10 }[style] || 26); i++) {
+  for (let i = 0; i < ({ garden: 60, bible: 10, city: 4 }[style] || 26); i++) {
     const a = R() * Math.PI * 2, r = 7 + R() * (ISLAND_R - 9);
     const x = Math.cos(a) * r, z = Math.sin(a) * r;
     if (!free(x, z, 1)) continue;
     const f = makeFlowerPatch(R, 7, 1);
     f.position.set(x, 0, z); scene.add(f);
   }
-  for (let i = 0; i < (style === 'bible' ? 34 : 14); i++) {
+  for (let i = 0; i < ({ bible: 34, city: 0 }[style] ?? 14); i++) {
     const a = R() * Math.PI * 2, r = 8 + R() * (ISLAND_R - 10);
     const x = Math.cos(a) * r, z = Math.sin(a) * r;
     if (!free(x, z, 0.8)) continue;

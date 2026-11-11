@@ -1,8 +1,8 @@
 // Módulo da ELLEN — inglês (nível A1) no clima de uma série de comédia sobre uma turma de amigos:
 // apartamento, cafeteria, conversa do dia a dia, gírias leves, convites e planos.
-// Os personagens, falas e lugares são ORIGINAIS deste jogo (inspirados no estilo "sitcom de amigos").
+// Os personagens são os da série Friends (o jogo é só para a família). As falas são escritas para o curso.
 // Mesmo formato do módulo do Junior (veja o topo de courses/junior.js).
-// Cenário: Coffee Street (js/themes.js → ellen).
+// Cenário: rua de Nova York com o Central Perk (js/themes.js → ellen).
 import { UNITS as J } from './junior.js';
 
 // etapas neutras do curso do Junior (cumprimentos, números, cores, comidas, frutas...) reaproveitadas aqui
@@ -16,7 +16,7 @@ export const UNITS = [
     id: 'u1', npc: 'greet', icon: '👋',
     title: { en: 'Hello!', pt: 'Olá! Cumprimentos e apresentações' },
     cando: 'Consigo cumprimentar (formal e entre amigos), me apresentar e perguntar como a pessoa está.',
-    intro: { en: "Hey! I'm Mia, your new neighbor! Let's learn to say hello and meet my friends!", pt: 'Ei! Eu sou a Mia, sua nova vizinha! Vamos aprender a cumprimentar e conhecer os meus amigos!' },
+    intro: { en: "Hey! I'm Monica, your new neighbor! Let's learn to say hello and meet my friends!", pt: 'Ei! Eu sou a Monica, sua nova vizinha! Vamos aprender a cumprimentar e conhecer os meus amigos!' },
     stages: [
       st('u1', 'greet'),
       st('u1', 'intro'),
@@ -45,41 +45,41 @@ export const UNITS = [
       st('u1', 'gram'),
       {
         id: 'listen', type: 'listen', title: { en: 'Listening: at the café', pt: 'Escuta: na cafeteria' },
-        scene: { en: 'Mia is at the café with Ben. Kate is with her.', pt: 'A Mia está na cafeteria com o Ben. A Kate está com ela.' },
+        scene: { en: 'Monica is at the café with Ross. Phoebe is with her.', pt: 'A Monica está na cafeteria com o Ross. A Phoebe está com ela.' },
         lines: [
-          { who: 'greet', en: "Hey, Ben! What's up?", pt: 'Ei, Ben! E aí?' },
-          { who: 'Ben', en: "Not much. How's it going, Mia?", pt: 'Nada de mais. Como vão as coisas, Mia?' },
-          { who: 'greet', en: "Pretty good! Ben, this is Kate. She's my new roommate.", pt: 'Tudo bem! Ben, esta é a Kate. Ela é minha nova colega de apartamento.' },
-          { who: 'Ben', en: 'Hi, Kate! Nice to meet you.', pt: 'Oi, Kate! Prazer em te conhecer.' },
-          { who: 'Kate', en: 'Nice to meet you too, Ben. How are you?', pt: 'O prazer é meu, Ben. Como você está?' },
-          { who: 'Ben', en: "I'm great, thanks. Welcome to the building!", pt: 'Estou ótimo, obrigado. Bem-vinda ao prédio!' },
-          { who: 'Kate', en: 'Thank you! I love this café.', pt: 'Obrigada! Eu amo esta cafeteria.' },
-          { who: 'Ben', en: 'Me too!', pt: 'Eu também!' },
-          { who: 'greet', en: "Oh, it's late! See you tomorrow, Ben!", pt: 'Ah, está tarde! Até amanhã, Ben!' },
-          { who: 'Ben', en: 'Take care! Bye!', pt: 'Se cuidem! Tchau!' },
+          { who: 'greet', en: "Hey, Ross! What's up?", pt: 'Ei, Ross! E aí?' },
+          { who: 'Ross', en: "Not much. How's it going, Monica?", pt: 'Nada de mais. Como vão as coisas, Monica?' },
+          { who: 'greet', en: "Pretty good! Ross, this is Phoebe. She's my new roommate.", pt: 'Tudo bem! Ross, esta é a Phoebe. Ela é minha nova colega de apartamento.' },
+          { who: 'Ross', en: 'Hi, Phoebe! Nice to meet you.', pt: 'Oi, Phoebe! Prazer em te conhecer.' },
+          { who: 'Phoebe', en: 'Nice to meet you too, Ross. How are you?', pt: 'O prazer é meu, Ross. Como você está?' },
+          { who: 'Ross', en: "I'm great, thanks. Welcome to the building!", pt: 'Estou ótimo, obrigado. Bem-vinda ao prédio!' },
+          { who: 'Phoebe', en: 'Thank you! I love this café.', pt: 'Obrigada! Eu amo esta cafeteria.' },
+          { who: 'Ross', en: 'Me too!', pt: 'Eu também!' },
+          { who: 'greet', en: "Oh, it's late! See you tomorrow, Ross!", pt: 'Ah, está tarde! Até amanhã, Ross!' },
+          { who: 'Ross', en: 'Take care! Bye!', pt: 'Se cuidem! Tchau!' },
         ],
         questions: [
-          { q: { en: 'Who is Kate?', pt: 'Quem é a Kate?' }, opts: ["Mia's new roommate", "Ben's sister", 'the waitress'], a: "Mia's new roommate" },
-          { q: { en: 'How is Ben?', pt: 'Como o Ben está?' }, opts: ['great', 'tired', 'sad'], a: 'great' },
-          { q: { en: 'What does Kate love?', pt: 'O que a Kate ama?' }, opts: ['the café', 'the park', 'the bus'], a: 'the café' },
-          { q: { en: 'What does Mia say at the end?', pt: 'O que a Mia diz no final?' }, opts: ['See you tomorrow!', 'Good morning!', 'Nice to meet you!'], a: 'See you tomorrow!' },
+          { q: { en: 'Who is Phoebe?', pt: 'Quem é a Phoebe?' }, opts: ["Monica's new roommate", "Ross's sister", 'the waitress'], a: "Monica's new roommate" },
+          { q: { en: 'How is Ross?', pt: 'Como o Ross está?' }, opts: ['great', 'tired', 'sad'], a: 'great' },
+          { q: { en: 'What does Phoebe love?', pt: 'O que a Phoebe ama?' }, opts: ['the café', 'the park', 'the bus'], a: 'the café' },
+          { q: { en: 'What does Monica say at the end?', pt: 'O que a Monica diz no final?' }, opts: ['See you tomorrow!', 'Good morning!', 'Nice to meet you!'], a: 'See you tomorrow!' },
         ],
       },
       {
-        id: 'talk', type: 'talk', partner: 'greet', title: { en: 'Conversation', pt: 'Conversa com a Mia' },
-        scene: { en: 'Mia is your new neighbor. Talk to her.', pt: 'A Mia é a sua nova vizinha. Converse com ela e escolha a melhor resposta.' },
+        id: 'talk', type: 'talk', partner: 'greet', title: { en: 'Conversation', pt: 'Conversa com a Monica' },
+        scene: { en: 'Monica is your new neighbor. Talk to her.', pt: 'A Monica é a sua nova vizinha. Converse com ela e escolha a melhor resposta.' },
         turns: [
-          { en: "Hey! You're new here, right? I'm Mia.", pt: 'Ei! Você é novo(a) aqui, né? Eu sou a Mia.', opts: [
-            { en: "Hi, Mia! I'm {name}.", ok: true },
-            { en: 'Hi! My name is Mia.', why: 'Mia é ela! Diga o SEU nome.' },
-            { en: 'Good night, Mia!', why: '"Good night" é despedida. Diga oi e o seu nome.' }] },
+          { en: "Hey! You're new here, right? I'm Monica.", pt: 'Ei! Você é novo(a) aqui, né? Eu sou a Monica.', opts: [
+            { en: "Hi, Monica! I'm {name}.", ok: true },
+            { en: 'Hi! My name is Monica.', why: 'Monica é ela! Diga o SEU nome.' },
+            { en: 'Good night, Monica!', why: '"Good night" é despedida. Diga oi e o seu nome.' }] },
           { en: "Nice to meet you, {name}! How's it going?", pt: 'Prazer em te conhecer! Como vão as coisas?', opts: [
             { en: 'Nice to meet you too. Pretty good!', ok: true },
             { en: "Nice to meet you too. I'm fine, thanks.", ok: true },
             { en: "I'm {name}.", why: 'Você já disse o nome. Ela perguntou como vão as coisas: Pretty good!' }] },
           { en: 'Cool! I live in apartment three. Welcome to the building!', pt: 'Legal! Eu moro no apartamento três. Bem-vindo(a) ao prédio!', opts: [
             { en: 'Thank you!', ok: true },
-            { en: 'Thanks, Mia!', ok: true },
+            { en: 'Thanks, Monica!', ok: true },
             { en: 'Please!', why: '"Please" é por favor. Para agradecer: Thank you! / Thanks!' }] },
           { en: "I'm so tired today...", pt: 'Estou tão cansada hoje...', opts: [
             { en: 'Me too.', ok: true },
@@ -92,33 +92,33 @@ export const UNITS = [
         ],
       },
       {
-        id: 'meet', type: 'mission', at: ['Ben', 'Kate', 'Duke'],
+        id: 'meet', type: 'mission', at: ['Ross', 'Phoebe', 'Mike'],
         title: { en: 'Mission: meet the gang', pt: 'Missão: conheça a turma' },
-        desc: 'Converse com os 3 amigos que passeiam pela rua: Ben 🐶, Kate 🐱 e Duke 🐻.',
+        desc: 'Converse com os 3 amigos que passeiam pela rua: Ross 🦕, Phoebe 🎸 e Mike 🎹.',
         talks: {
-          Ben: [
+          Ross: [
             { en: "Hey! What's up?", pt: 'Ei! E aí?', opts: [
               { en: 'Not much. And you?', ok: true }, { en: "Hey! How's it going?", ok: true }, { en: 'Good night!', why: 'Ele está te cumprimentando. Responda: Not much. And you?' }] },
-            { en: "Pretty good! I'm Ben. And you?", pt: 'Tudo bem! Eu sou o Ben. E você?', opts: [
-              { en: "I'm {name}. Nice to meet you.", ok: true }, { en: "I'm Ben.", why: 'Ben é ele! Diga o seu nome.' }, { en: 'Me too.', why: 'Ele quer saber o seu NOME: I\'m...' }] },
+            { en: "Pretty good! I'm Ross. And you?", pt: 'Tudo bem! Eu sou o Ross. E você?', opts: [
+              { en: "I'm {name}. Nice to meet you.", ok: true }, { en: "I'm Ross.", why: 'Ross é ele! Diga o seu nome.' }, { en: 'Me too.', why: 'Ele quer saber o seu NOME: I\'m...' }] },
             { en: 'Nice to meet you too. See you around!', pt: 'O prazer é meu. A gente se vê por aí!', opts: [
-              { en: 'See you, Ben!', ok: true }, { en: 'Welcome!', why: 'Ele está se despedindo: See you!' }, { en: "What's up?", why: 'Ele está se despedindo: See you!' }] },
+              { en: 'See you, Ross!', ok: true }, { en: 'Welcome!', why: 'Ele está se despedindo: See you!' }, { en: "What's up?", why: 'Ele está se despedindo: See you!' }] },
           ],
-          Kate: [
+          Phoebe: [
             { en: 'Hi! Are you the new neighbor?', pt: 'Oi! Você é o(a) novo(a) vizinho(a)?', opts: [
               { en: 'Yes, I am.', ok: true }, { en: 'Yes, you are.', why: 'Ela perguntou sobre VOCÊ: Yes, I am.' }, { en: 'No, thanks.', why: '"No, thanks" é para recusar algo. Responda: Yes, I am.' }] },
-            { en: "Cool! I'm Kate. What's your name?", pt: 'Legal! Eu sou a Kate. Qual é o seu nome?', opts: [
-              { en: 'My name is {name}.', ok: true }, { en: 'My name is Kate.', why: 'Kate é ela! Diga o seu nome.' }, { en: 'Pretty good.', why: 'Ela perguntou o seu NOME.' }] },
+            { en: "Cool! I'm Phoebe. What's your name?", pt: 'Legal! Eu sou a Phoebe. Qual é o seu nome?', opts: [
+              { en: 'My name is {name}.', ok: true }, { en: 'My name is Phoebe.', why: 'Phoebe é ela! Diga o seu nome.' }, { en: 'Pretty good.', why: 'Ela perguntou o seu NOME.' }] },
             { en: 'Nice to meet you, {name}. Take care!', pt: 'Prazer em te conhecer. Se cuida!', opts: [
               { en: 'Nice to meet you too. Take care!', ok: true }, { en: 'Not much.', why: 'Responda ao "prazer": Nice to meet you too.' }, { en: 'Good morning!', why: 'Ela está se despedindo: Take care!' }] },
           ],
-          Duke: [
-            { en: "Hello there! I'm Duke. How are you today?", pt: 'Olá! Eu sou o Duke. Como você está hoje?', opts: [
-              { en: "I'm great, thanks. And you?", ok: true }, { en: "I'm fine, thanks. And you?", ok: true }, { en: "I'm Duke.", why: 'Duke é ele! Diga como você está: I\'m fine.' }] },
+          Mike: [
+            { en: "Hello there! I'm Mike. How are you today?", pt: 'Olá! Eu sou o Mike. Como você está hoje?', opts: [
+              { en: "I'm great, thanks. And you?", ok: true }, { en: "I'm fine, thanks. And you?", ok: true }, { en: "I'm Mike.", why: 'Mike é ele! Diga como você está: I\'m fine.' }] },
             { en: "I'm a little tired. I work at night.", pt: 'Estou um pouco cansado. Eu trabalho à noite.', opts: [
               { en: 'Really? Take care!', ok: true }, { en: 'Nice to meet you too.', why: 'Ele disse que está cansado. Diga: Really? Take care!' }, { en: 'Yes, please.', why: 'Ele disse que está cansado. Diga: Really? Take care!' }] },
             { en: 'Thanks! See you tomorrow!', pt: 'Obrigado! Até amanhã!', opts: [
-              { en: 'See you tomorrow, Duke!', ok: true }, { en: 'Hello!', why: 'Ele está se despedindo: See you tomorrow!' }, { en: "How's it going?", why: 'Ele está se despedindo: See you tomorrow!' }] },
+              { en: 'See you tomorrow, Mike!', ok: true }, { en: 'Hello!', why: 'Ele está se despedindo: See you tomorrow!' }, { en: "How's it going?", why: 'Ele está se despedindo: See you tomorrow!' }] },
           ],
         },
       },
@@ -129,7 +129,7 @@ export const UNITS = [
     id: 'u2', npc: 'numbers', icon: '🙋',
     title: { en: 'About me', pt: 'Sobre mim e os meus amigos' },
     cando: 'Consigo dizer de onde sou, onde moro, minha idade, minha profissão e apresentar um amigo.',
-    intro: { en: "Hey! I'm Sam. I love games and numbers! Let's learn numbers and talk about you and your friends!", pt: 'Ei! Eu sou o Sam. Eu amo jogos e números! Vamos aprender os números e falar de você e dos seus amigos!' },
+    intro: { en: "Hey! I'm Chandler. I love games and numbers! Let's learn numbers and talk about you and your friends!", pt: 'Ei! Eu sou o Chandler. Eu amo jogos e números! Vamos aprender os números e falar de você e dos seus amigos!' },
     stages: [
       st('u2', 'n1'),
       st('u2', 'n2'),
@@ -194,11 +194,11 @@ export const UNITS = [
               <table><tr><th>a + som de consoante</th><th>an + som de vogal</th></tr>
               <tr><td><b>a</b> chef · <b>a</b> musician · <b>a</b> waiter</td><td><b>an</b> actor · <b>an</b> artist</td></tr></table>
               <p>❌ <s>I'm chef.</s> &nbsp; ✅ <b>I'm a chef.</b></p>
-              <p>💡 Para apresentar alguém: <b>This is</b> Kate. <b>She's</b> my roommate.</p>`,
+              <p>💡 Para apresentar alguém: <b>This is</b> Phoebe. <b>She's</b> my roommate.</p>`,
             examples: [
               { en: "I'm a chef.", pt: 'Eu sou chef de cozinha.' },
               { en: "She's an artist.", pt: 'Ela é artista.' },
-              { en: "This is Leo. He's my best friend.", pt: 'Este é o Leo. Ele é meu melhor amigo.' },
+              { en: "This is Joey. He's my best friend.", pt: 'Este é o Joey. Ele é meu melhor amigo.' },
             ],
           },
         ],
@@ -208,37 +208,37 @@ export const UNITS = [
           { gap: 'I ___ thirty years old.', pt: 'Eu tenho trinta anos.', opts: ['am', 'have', 'is'], a: 'am', why: 'Idade usa TO BE: I am thirty. Nunca "have".' },
           { gap: "She's ___ actor.", pt: 'Ela é atriz.', opts: ['an', 'a', 'the'], a: 'an', why: '"Actor" começa com som de vogal → an.' },
           { gap: "I'm ___ musician.", pt: 'Eu sou músico(a).', opts: ['a', 'an', 'are'], a: 'a', why: '"Musician" começa com som de consoante → a.' },
-          { gap: '___ is my roommate, Kate.', pt: 'Esta é minha colega de apartamento, a Kate.', opts: ['This', 'He', 'Are'], a: 'This', why: 'Para apresentar alguém: This is...' },
+          { gap: '___ is my roommate, Phoebe.', pt: 'Esta é minha colega de apartamento, a Phoebe.', opts: ['This', 'He', 'Are'], a: 'This', why: 'Para apresentar alguém: This is...' },
           { order: "He's my best friend.", pt: 'Ele é meu melhor amigo.' },
           { order: 'I live in apartment five.', pt: 'Eu moro no apartamento cinco.' },
         ],
       },
       {
         id: 'listen', type: 'listen', title: { en: 'Listening: a new neighbor', pt: 'Escuta: um vizinho novo' },
-        scene: { en: 'Sam meets Duke at the Game Corner.', pt: 'O Sam conhece o Duke no Cantinho dos Jogos.' },
+        scene: { en: 'Chandler meets Mike at the Game Corner.', pt: 'O Chandler conhece o Mike no Cantinho dos Jogos.' },
         lines: [
-          { who: 'numbers', en: "Hey! I'm Sam. Are you new in the building?", pt: 'Ei! Eu sou o Sam. Você é novo no prédio?' },
-          { who: 'Duke', en: "Yes, I am. I'm Duke. I live in apartment seven.", pt: 'Sou, sim. Eu sou o Duke. Eu moro no apartamento sete.' },
-          { who: 'numbers', en: 'Cool! Where are you from, Duke?', pt: 'Legal! De onde você é, Duke?' },
-          { who: 'Duke', en: "I'm from Chicago. What do you do, Sam?", pt: 'Eu sou de Chicago. O que você faz, Sam?' },
+          { who: 'numbers', en: "Hey! I'm Chandler. Are you new in the building?", pt: 'Ei! Eu sou o Chandler. Você é novo no prédio?' },
+          { who: 'Mike', en: "Yes, I am. I'm Mike. I live in apartment seven.", pt: 'Sou, sim. Eu sou o Mike. Eu moro no apartamento sete.' },
+          { who: 'numbers', en: 'Cool! Where are you from, Mike?', pt: 'Legal! De onde você é, Mike?' },
+          { who: 'Mike', en: "I'm from Chicago. What do you do, Chandler?", pt: 'Eu sou de Chicago. O que você faz, Chandler?' },
           { who: 'numbers', en: "I'm a chef. I work at a restaurant. And you?", pt: 'Eu sou chef. Eu trabalho num restaurante. E você?' },
-          { who: 'Duke', en: "I'm a musician. I play the guitar at night.", pt: 'Eu sou músico. Eu toco violão à noite.' },
+          { who: 'Mike', en: "I'm a musician. I play the piano at night.", pt: 'Eu sou músico. Eu toco piano à noite.' },
           { who: 'numbers', en: 'Really? Cool! How old are you?', pt: 'Sério? Legal! Quantos anos você tem?' },
-          { who: 'Duke', en: "I'm twenty-five. And you?", pt: 'Eu tenho vinte e cinco. E você?' },
-          { who: 'numbers', en: "I'm thirty. Hey, this is Leo. He's my best friend.", pt: 'Eu tenho trinta. Ei, este é o Leo. Ele é meu melhor amigo.' },
-          { who: 'Duke', en: 'Hi, Leo! Nice to meet you.', pt: 'Oi, Leo! Prazer em te conhecer.' },
+          { who: 'Mike', en: "I'm twenty-five. And you?", pt: 'Eu tenho vinte e cinco. E você?' },
+          { who: 'numbers', en: "I'm thirty. Hey, this is Joey. He's my best friend.", pt: 'Eu tenho trinta. Ei, este é o Joey. Ele é meu melhor amigo.' },
+          { who: 'Mike', en: 'Hi, Joey! Nice to meet you.', pt: 'Oi, Joey! Prazer em te conhecer.' },
         ],
         questions: [
-          { q: { en: 'Where does Duke live?', pt: 'Onde o Duke mora?' }, opts: ['apartment seven', 'apartment five', 'apartment three'], a: 'apartment seven' },
-          { q: { en: 'What does Duke do?', pt: 'O que o Duke faz?' }, opts: ["He's a musician.", "He's a chef.", "He's an actor."], a: "He's a musician." },
-          { q: { en: 'What does Sam do?', pt: 'O que o Sam faz?' }, opts: ["He's a chef.", "He's a musician.", "He's a teacher."], a: "He's a chef." },
-          { q: { en: 'How old is Duke?', pt: 'Quantos anos o Duke tem?' }, opts: ['twenty-five', 'thirty', 'fifteen'], a: 'twenty-five' },
-          { q: { en: 'Who is Leo?', pt: 'Quem é o Leo?' }, opts: ["Sam's best friend", "Duke's roommate", 'the waiter'], a: "Sam's best friend" },
+          { q: { en: 'Where does Mike live?', pt: 'Onde o Mike mora?' }, opts: ['apartment seven', 'apartment five', 'apartment three'], a: 'apartment seven' },
+          { q: { en: 'What does Mike do?', pt: 'O que o Mike faz?' }, opts: ["He's a musician.", "He's a chef.", "He's an actor."], a: "He's a musician." },
+          { q: { en: 'What does Chandler do?', pt: 'O que o Chandler faz?' }, opts: ["He's a chef.", "He's a musician.", "He's a teacher."], a: "He's a chef." },
+          { q: { en: 'How old is Mike?', pt: 'Quantos anos o Mike tem?' }, opts: ['twenty-five', 'thirty', 'fifteen'], a: 'twenty-five' },
+          { q: { en: 'Who is Joey?', pt: 'Quem é o Joey?' }, opts: ["Chandler's best friend", "Mike's roommate", 'the waiter'], a: "Chandler's best friend" },
         ],
       },
       {
-        id: 'talk', type: 'talk', partner: 'numbers', title: { en: 'Conversation', pt: 'Conversa com o Sam' },
-        scene: { en: 'Sam wants to play a question game.', pt: 'O Sam quer brincar de perguntas. Escolha a melhor resposta.' },
+        id: 'talk', type: 'talk', partner: 'numbers', title: { en: 'Conversation', pt: 'Conversa com o Chandler' },
+        scene: { en: 'Chandler wants to play a question game.', pt: 'O Chandler quer brincar de perguntas. Escolha a melhor resposta.' },
         turns: [
           { en: "Hey, {name}! Let's play a game: I ask, you answer. OK?", pt: 'Ei! Vamos jogar: eu pergunto, você responde. OK?', opts: [
             { en: 'OK! Sure!', ok: true },
@@ -268,15 +268,15 @@ export const UNITS = [
           { en: 'Me too! You win the game!', pt: 'A minha também! Você ganhou o jogo!', opts: [
             { en: 'Really? Cool! Thank you!', ok: true },
             { en: 'Not much.', why: '"Not much" é resposta para "What\'s up?". Comemore: Cool! Thank you!' },
-            { en: "I'm from Sam.", why: 'Isso não faz sentido 😄. Comemore: Cool! Thank you!' }] },
+            { en: "I'm from Chandler.", why: 'Isso não faz sentido 😄. Comemore: Cool! Thank you!' }] },
         ],
       },
       {
         id: 'idcard', type: 'mission', at: 'mayor',
         title: { en: 'Mission: your neighbor card', pt: 'Missão: seu cartão de vizinho' },
-        desc: 'Vá até o Sr. Gray 🐻 (o síndico) na praça central e responda as perguntas para fazer o seu cartão de vizinho.',
+        desc: 'Vá até o Sr. Treeger 🔧 (o zelador) na praça central e responda as perguntas para fazer o seu cartão de vizinho.',
         talk: [
-          { en: "Good morning! I'm Mr. Gray, the building manager. I need some information for your neighbor card.", pt: 'Bom dia! Eu sou o Sr. Gray, o síndico. Preciso de algumas informações para o seu cartão de vizinho.', opts: [
+          { en: "Good morning! I'm Mr. Treeger, the building super. I need some information for your neighbor card.", pt: 'Bom dia! Eu sou o Sr. Treeger, o zelador. Preciso de algumas informações para o seu cartão de vizinho.', opts: [
             { en: 'OK, no problem.', ok: true }, { en: "No, I'm fine.", why: '"I\'m fine" é "estou bem". Diga: OK, no problem.' }, { en: 'Good night!', why: 'Ele disse bom dia. Diga: OK, no problem.' }] },
           { en: "What's your name?", pt: 'Qual é o seu nome?', opts: [
             { en: 'My name is {name}.', ok: true }, { en: 'Your name is Gray.', why: 'Diga o SEU nome: My name is...' }, { en: "I'm from {name}.", why: '"From" é para lugar. Diga: My name is...' }] },
@@ -295,7 +295,7 @@ export const UNITS = [
             { en: "I'm a musician.", ok: true, save: ['job', 'Musician 🎸'] },
             { en: "I'm a student.", ok: true, save: ['job', 'Student 🎓'] },
             { en: "I'm a actor.", why: '"Actor" começa com vogal: I\'m AN actor.' }] },
-          { en: 'Thank you, {name}! Here is your card. Welcome to Coffee Street!', pt: 'Obrigado! Aqui está o seu cartão. Bem-vindo(a) à Coffee Street!', opts: [
+          { en: 'Thank you, {name}! Here is your card. Welcome to the building!', pt: 'Obrigado! Aqui está o seu cartão. Bem-vindo(a) ao prédio!', opts: [
             { en: 'Thank you very much!', ok: true }, { en: 'Please!', why: '"Please" é por favor. Agradeça: Thank you!' }, { en: 'Good night!', why: 'Agradeça: Thank you very much!' }] },
         ],
       },
@@ -306,7 +306,7 @@ export const UNITS = [
     id: 'u3', npc: 'fruits', icon: '☕',
     title: { en: 'At the café', pt: 'Na cafeteria com os amigos' },
     cando: 'Consigo pedir comida e bebida, dizer que estou com fome ou sede e pagar a conta.',
-    intro: { en: "Hi! I'm Zoe. Are you hungry? Let's learn food and drinks. Then we go to the Cozy Cup Café!", pt: 'Oi! Eu sou a Zoe. Está com fome? Vamos aprender comidas e bebidas. Depois vamos à cafeteria Cozy Cup!' },
+    intro: { en: "Hi! I'm Rachel. Are you hungry? Let's learn food and drinks. Then we go to Central Perk!", pt: 'Oi! Eu sou a Rachel. Está com fome? Vamos aprender comidas e bebidas. Depois vamos ao Central Perk!' },
     stages: [
       st('u3', 'food'),
       st('u3', 'fruits'),
@@ -335,33 +335,33 @@ export const UNITS = [
       st('u3', 'gram'),
       {
         id: 'listen', type: 'listen', title: { en: 'Listening: lunch at the café', pt: 'Escuta: almoço na cafeteria' },
-        scene: { en: 'Kate and Duke are at the Cozy Cup Café.', pt: 'A Kate e o Duke estão na cafeteria Cozy Cup.' },
+        scene: { en: 'Phoebe and Mike are at Central Perk.', pt: 'A Phoebe e o Mike estão no Central Perk.' },
         lines: [
           { who: 'bakery', en: 'Hi, guys! A table for two?', pt: 'Oi, pessoal! Mesa para dois?' },
-          { who: 'Kate', en: "Yes, please. I'm so hungry!", pt: 'Sim, por favor. Estou com tanta fome!' },
+          { who: 'Phoebe', en: "Yes, please. I'm so hungry!", pt: 'Sim, por favor. Estou com tanta fome!' },
           { who: 'bakery', en: 'Here is the menu. What would you like?', pt: 'Aqui está o cardápio. O que vocês vão querer?' },
-          { who: 'Kate', en: "I'd like a sandwich and an orange juice, please.", pt: 'Eu queria um sanduíche e um suco de laranja, por favor.' },
-          { who: 'Duke', en: 'Can I have a coffee and a cake, please?', pt: 'Pode me trazer um café e um bolo, por favor?' },
+          { who: 'Phoebe', en: "I'd like a sandwich and an orange juice, please.", pt: 'Eu queria um sanduíche e um suco de laranja, por favor.' },
+          { who: 'Mike', en: 'Can I have a coffee and a cake, please?', pt: 'Pode me trazer um café e um bolo, por favor?' },
           { who: 'bakery', en: 'Sure! Anything else?', pt: 'Claro! Mais alguma coisa?' },
-          { who: 'Duke', en: "No, that's all, thanks.", pt: 'Não, é só isso, obrigado.' },
-          { who: 'Kate', en: 'Mmm! This sandwich is delicious!', pt: 'Hmm! Este sanduíche está uma delícia!' },
-          { who: 'Duke', en: 'The check, please.', pt: 'A conta, por favor.' },
+          { who: 'Mike', en: "No, that's all, thanks.", pt: 'Não, é só isso, obrigado.' },
+          { who: 'Phoebe', en: 'Mmm! This sandwich is delicious!', pt: 'Hmm! Este sanduíche está uma delícia!' },
+          { who: 'Mike', en: 'The check, please.', pt: 'A conta, por favor.' },
           { who: 'bakery', en: "It's fifteen dollars.", pt: 'São quinze dólares.' },
-          { who: 'Kate', en: "Let's split the check.", pt: 'Vamos dividir a conta.' },
-          { who: 'Duke', en: "No, no. It's my treat!", pt: 'Não, não. É por minha conta!' },
-          { who: 'Kate', en: 'Really? Thank you, Duke!', pt: 'Sério? Obrigada, Duke!' },
+          { who: 'Phoebe', en: "Let's split the check.", pt: 'Vamos dividir a conta.' },
+          { who: 'Mike', en: "No, no. It's my treat!", pt: 'Não, não. É por minha conta!' },
+          { who: 'Phoebe', en: 'Really? Thank you, Mike!', pt: 'Sério? Obrigada, Mike!' },
         ],
         questions: [
-          { q: { en: 'What does Kate order?', pt: 'O que a Kate pede?' }, opts: ['a sandwich and an orange juice', 'a coffee and a cake', 'a soup and a tea'], a: 'a sandwich and an orange juice' },
-          { q: { en: 'What does Duke drink?', pt: 'O que o Duke bebe?' }, opts: ['coffee', 'tea', 'juice'], a: 'coffee' },
+          { q: { en: 'What does Phoebe order?', pt: 'O que a Phoebe pede?' }, opts: ['a sandwich and an orange juice', 'a coffee and a cake', 'a soup and a tea'], a: 'a sandwich and an orange juice' },
+          { q: { en: 'What does Mike drink?', pt: 'O que o Mike bebe?' }, opts: ['coffee', 'tea', 'juice'], a: 'coffee' },
           { q: { en: 'How is the sandwich?', pt: 'Como está o sanduíche?' }, opts: ['delicious', 'small', 'bad'], a: 'delicious' },
           { q: { en: 'How much is the check?', pt: 'Quanto deu a conta?' }, opts: ['fifteen dollars', 'fifty dollars', 'five dollars'], a: 'fifteen dollars' },
-          { q: { en: 'Who pays?', pt: 'Quem paga?' }, opts: ['Duke', 'Kate', 'Olive'], a: 'Duke' },
+          { q: { en: 'Who pays?', pt: 'Quem paga?' }, opts: ['Mike', 'Phoebe', 'Gunther'], a: 'Mike' },
         ],
       },
       {
         id: 'talk', type: 'talk', partner: 'fruits', title: { en: 'Role-play: the restaurant', pt: 'Conversa: brincando de restaurante' },
-        scene: { en: 'Zoe is the waitress. You are the customer.', pt: 'A Zoe é a garçonete. Você é o(a) cliente.' },
+        scene: { en: 'Rachel is the waitress. You are the customer.', pt: 'A Rachel é a garçonete. Você é o(a) cliente.' },
         turns: [
           { en: 'Hello! Welcome! A table for one?', pt: 'Olá! Bem-vindo(a)! Mesa para um?', opts: [
             { en: 'Yes, please.', ok: true },
@@ -401,9 +401,9 @@ export const UNITS = [
       {
         id: 'cafe', type: 'mission', at: 'bakery',
         title: { en: 'Mission: lunch with a friend', pt: 'Missão: almoço com um amigo' },
-        desc: 'Vá até a Olive 🐻 no COZY CUP CAFÉ. Você vai almoçar com o Ben: peça a comida e resolva a conta!',
+        desc: 'Vá até o Gunther ☕ no CENTRAL PERK. Você vai almoçar com o Ross: peça a comida e resolva a conta!',
         talk: [
-          { en: 'Hi, {name}! Hi, Ben! A table for two?', pt: 'Oi! Oi, Ben! Mesa para dois?', opts: [
+          { en: 'Hi, {name}! Hi, Ross! A table for two?', pt: 'Oi! Oi, Ross! Mesa para dois?', opts: [
             { en: 'Yes, please. A table for two.', ok: true },
             { en: "Yes, I'm two.", why: 'Isso é "eu tenho dois anos" 😄. Diga: A table for two.' },
             { en: 'The check, please.', why: 'Você ainda nem comeu 😄. Primeiro a mesa: A table for two.' }] },
@@ -411,16 +411,16 @@ export const UNITS = [
             { en: "I'd like a sandwich and a juice, please.", ok: true },
             { en: 'Can I have a soup and a tea, please?', ok: true },
             { en: 'I like sandwich.', why: '"I like" = eu gosto. Para pedir: I\'D like a sandwich, please.' }] },
-          { who: 'Ben', en: "And I'd like a cake and a coffee, please. I'm so hungry!", pt: 'E eu queria um bolo e um café, por favor. Estou com tanta fome!' },
+          { who: 'Ross', en: "And I'd like a cake and a coffee, please. I'm so hungry!", pt: 'E eu queria um bolo e um café, por favor. Estou com tanta fome!' },
           { en: 'Sure! Anything else?', pt: 'Claro! Mais alguma coisa?', opts: [
             { en: "No, that's all, thanks.", ok: true },
             { en: 'Yes. Water, please.', ok: true },
             { en: 'Yes, you are.', why: 'Se não quer mais nada: No, that\'s all, thanks.' }] },
           { en: 'Here you are. Enjoy your meal!', pt: 'Aqui está. Bom apetite!', opts: [
             { en: "Thank you! It's delicious!", ok: true },
-            { en: 'Thanks, Olive!', ok: true },
+            { en: 'Thanks, Gunther!', ok: true },
             { en: "You're welcome.", why: '"You\'re welcome" é a resposta para um "thank you". Aqui VOCÊ agradece.' }] },
-          { who: 'Ben', en: "Mmm! Let's split the check, {name}.", pt: 'Hmm! Vamos dividir a conta.', opts: [
+          { who: 'Ross', en: "Mmm! Let's split the check, {name}.", pt: 'Hmm! Vamos dividir a conta.', opts: [
             { en: "No, it's my treat!", ok: true },
             { en: "OK. Let's split the check.", ok: true },
             { en: "No, I'm a check.", why: 'Isso é "eu sou uma conta" 😄. Diga: It\'s my treat! ou Let\'s split the check.' }] },
@@ -428,8 +428,8 @@ export const UNITS = [
             { en: 'Can I pay by card?', ok: true },
             { en: 'Here you are.', ok: true },
             { en: 'How old is it?', why: '"How old" é idade. Para pagar: Can I pay by card?' }] },
-          { who: 'Ben', en: "Thank you, {name}! You're a great friend!", pt: 'Obrigado! Você é um(a) ótimo(a) amigo(a)!', opts: [
-            { en: "You're welcome, Ben!", ok: true },
+          { who: 'Ross', en: "Thank you, {name}! You're a great friend!", pt: 'Obrigado! Você é um(a) ótimo(a) amigo(a)!', opts: [
+            { en: "You're welcome, Ross!", ok: true },
             { en: 'Not much.', why: 'Ele agradeceu. Responda: You\'re welcome! (de nada)' },
             { en: 'The menu, please.', why: 'Ele agradeceu. Responda: You\'re welcome! (de nada)' }] },
         ],
@@ -441,7 +441,7 @@ export const UNITS = [
     id: 'u4', npc: 'colors', icon: '🎬',
     title: { en: 'Hanging out', pt: 'Saindo com os amigos: gostos e convites' },
     cando: 'Consigo dizer do que gosto, convidar um amigo, combinar horário e reagir como numa conversa de verdade.',
-    intro: { en: "Hey! I'm Leo. I'm an actor! Let's talk about things we like and make plans with friends!", pt: 'Ei! Eu sou o Leo. Eu sou ator! Vamos falar das coisas que a gente gosta e fazer planos com os amigos!' },
+    intro: { en: "Hey! I'm Joey. I'm an actor! Let's talk about things we like and make plans with friends!", pt: 'Ei! Eu sou o Joey. Eu sou ator! Vamos falar das coisas que a gente gosta e fazer planos com os amigos!' },
     stages: [
       {
         id: 'things', type: 'words', title: { en: 'Fun things', pt: 'Coisas divertidas' },
@@ -580,30 +580,30 @@ export const UNITS = [
       },
       {
         id: 'listen', type: 'listen', title: { en: 'Listening: plans for tonight', pt: 'Escuta: planos para hoje à noite' },
-        scene: { en: 'Leo, Kate and Ben make plans for tonight.', pt: 'O Leo, a Kate e o Ben combinam um programa para hoje à noite.' },
+        scene: { en: 'Joey, Phoebe and Ross make plans for tonight.', pt: 'O Joey, a Phoebe e o Ross combinam um programa para hoje à noite.' },
         lines: [
           { who: 'colors', en: 'Guess what! I have a new movie. Are you free tonight?', pt: 'Adivinha! Eu tenho um filme novo. Vocês estão livres hoje à noite?' },
-          { who: 'Kate', en: 'Yes, I am! I love movies. What time?', pt: 'Eu estou! Eu amo filmes. Que horas?' },
+          { who: 'Phoebe', en: 'Yes, I am! I love movies. What time?', pt: 'Eu estou! Eu amo filmes. Que horas?' },
           { who: 'colors', en: "At eight o'clock, in my apartment.", pt: 'Às oito horas, no meu apartamento.' },
-          { who: 'Kate', en: 'Sounds great! Ben, do you want to come?', pt: 'Parece ótimo! Ben, você quer vir?' },
-          { who: 'Ben', en: "Sorry, I can't. I'm busy tonight.", pt: 'Desculpa, não posso. Estou ocupado hoje à noite.' },
-          { who: 'Kate', en: 'No way! Are you serious?', pt: 'Não acredito! Está falando sério?' },
-          { who: 'Ben', en: "I'm kidding! I'd love to. I can bring pizza.", pt: 'Estou brincando! Eu adoraria. Posso levar pizza.' },
-          { who: 'colors', en: 'Good! I have popcorn. Kate, do you like popcorn?', pt: 'Boa! Eu tenho pipoca. Kate, você gosta de pipoca?' },
-          { who: 'Kate', en: 'Yes, I do. I like it a lot!', pt: 'Gosto, sim. Gosto muito!' },
+          { who: 'Phoebe', en: 'Sounds great! Ross, do you want to come?', pt: 'Parece ótimo! Ross, você quer vir?' },
+          { who: 'Ross', en: "Sorry, I can't. I'm busy tonight.", pt: 'Desculpa, não posso. Estou ocupado hoje à noite.' },
+          { who: 'Phoebe', en: 'No way! Are you serious?', pt: 'Não acredito! Está falando sério?' },
+          { who: 'Ross', en: "I'm kidding! I'd love to. I can bring pizza.", pt: 'Estou brincando! Eu adoraria. Posso levar pizza.' },
+          { who: 'colors', en: 'Good! I have popcorn. Phoebe, do you like popcorn?', pt: 'Boa! Eu tenho pipoca. Phoebe, você gosta de pipoca?' },
+          { who: 'Phoebe', en: 'Yes, I do. I like it a lot!', pt: 'Gosto, sim. Gosto muito!' },
           { who: 'colors', en: 'OK! See you there at eight!', pt: 'OK! Vejo vocês lá às oito!' },
         ],
         questions: [
           { q: { en: 'What time is the movie?', pt: 'Que horas é o filme?' }, opts: ["at eight o'clock", "at six o'clock", "at ten o'clock"], a: "at eight o'clock" },
-          { q: { en: 'Where is the movie night?', pt: 'Onde é a noite de cinema?' }, opts: ["in Leo's apartment", 'at the café', 'at the park'], a: "in Leo's apartment" },
-          { q: { en: 'Is Ben really busy?', pt: 'O Ben está mesmo ocupado?' }, opts: ["No. He's kidding.", "Yes. He's busy.", "Yes. He's tired."], a: "No. He's kidding." },
-          { q: { en: 'What can Ben bring?', pt: 'O que o Ben pode levar?' }, opts: ['pizza', 'popcorn', 'cake'], a: 'pizza' },
-          { q: { en: 'Does Kate like popcorn?', pt: 'A Kate gosta de pipoca?' }, opts: ['Yes, she does.', "No, she doesn't.", 'She hates it.'], a: 'Yes, she does.' },
+          { q: { en: 'Where is the movie night?', pt: 'Onde é a noite de cinema?' }, opts: ["in Joey's apartment", 'at the café', 'at the park'], a: "in Joey's apartment" },
+          { q: { en: 'Is Ross really busy?', pt: 'O Ross está mesmo ocupado?' }, opts: ["No. He's kidding.", "Yes. He's busy.", "Yes. He's tired."], a: "No. He's kidding." },
+          { q: { en: 'What can Ross bring?', pt: 'O que o Ross pode levar?' }, opts: ['pizza', 'popcorn', 'cake'], a: 'pizza' },
+          { q: { en: 'Does Phoebe like popcorn?', pt: 'A Phoebe gosta de pipoca?' }, opts: ['Yes, she does.', "No, she doesn't.", 'She hates it.'], a: 'Yes, she does.' },
         ],
       },
       {
-        id: 'talk', type: 'talk', partner: 'colors', title: { en: 'Conversation', pt: 'Conversa com o Leo' },
-        scene: { en: 'Leo has big news. Talk to him.', pt: 'O Leo tem uma novidade. Converse com ele.' },
+        id: 'talk', type: 'talk', partner: 'colors', title: { en: 'Conversation', pt: 'Conversa com o Joey' },
+        scene: { en: 'Joey has big news. Talk to him.', pt: 'O Joey tem uma novidade. Converse com ele.' },
         turns: [
           { en: "Hey, {name}! Guess what! I'm in a new movie!", pt: 'Ei! Adivinha! Eu estou num filme novo!', opts: [
             { en: 'No way! Good for you!', ok: true },
@@ -638,7 +638,7 @@ export const UNITS = [
       {
         id: 'movie', type: 'mission', at: 'colors',
         title: { en: 'Mission: movie night', pt: 'Missão: noite de cinema' },
-        desc: 'Volte ao Leo 🐱 no THE STUDIO. A turma vai fazer uma noite de cinema — combine tudo em inglês!',
+        desc: 'Volte ao Joey 🍕 no JOEY\'S STUDIO. A turma vai fazer uma noite de cinema — combine tudo em inglês!',
         talk: [
           { en: 'Hey, {name}! Are you free tonight?', pt: 'Ei! Você está livre hoje à noite?', opts: [
             { en: 'Yes, I am. Why?', ok: true },
@@ -648,21 +648,21 @@ export const UNITS = [
             { en: "I'd love to!", ok: true },
             { en: 'Sounds great!', ok: true },
             { en: 'Never mind.', why: '"Never mind" = deixa pra lá. Para aceitar: I\'d love to!' }] },
-          { who: 'Kate', en: "Hey, {name}! I'm coming too! Do you like popcorn?", pt: 'Ei! Eu também vou! Você gosta de pipoca?', opts: [
+          { who: 'Phoebe', en: "Hey, {name}! I'm coming too! Do you like popcorn?", pt: 'Ei! Eu também vou! Você gosta de pipoca?', opts: [
             { en: 'Yes, I do. I love popcorn!', ok: true },
             { en: "No, I don't. But I like pizza.", ok: true },
             { en: 'Yes, I like.', why: 'Resposta curta com DO: Yes, I do.' }] },
-          { who: 'Ben', en: 'Hey! What time is the movie?', pt: 'Ei! Que horas é o filme?', opts: [
+          { who: 'Ross', en: 'Hey! What time is the movie?', pt: 'Ei! Que horas é o filme?', opts: [
             { en: "At eight o'clock.", ok: true },
             { en: "In eight o'clock.", why: 'Hora → AT: at eight o\'clock.' },
-            { en: "In Leo's apartment.", why: 'Ele perguntou a HORA (what time), não o lugar.' }] },
-          { who: 'Ben', en: 'Cool. I can bring pizza. What can you bring, {name}?', pt: 'Legal. Eu posso levar pizza. O que você pode levar?', opts: [
+            { en: "In Joey's apartment.", why: 'Ele perguntou a HORA (what time), não o lugar.' }] },
+          { who: 'Ross', en: 'Cool. I can bring pizza. What can you bring, {name}?', pt: 'Legal. Eu posso levar pizza. O que você pode levar?', opts: [
             { en: 'I can bring juice.', ok: true },
             { en: 'I can bring a cake.', ok: true },
             { en: 'I can to bring juice.', why: 'Depois de CAN não tem "to": I can bring juice.' }] },
           { en: "Great! Oh no... I don't have a TV! ... I'm kidding!", pt: 'Ótimo! Ah, não... eu não tenho TV! ... Estou brincando!', opts: [
             { en: "No way! That's funny!", ok: true },
-            { en: "Oh my gosh, Leo! That's funny!", ok: true },
+            { en: "Oh my gosh, Joey! That's funny!", ok: true },
             { en: "Sorry, I can't.", why: 'Ele só fez uma piada 😄. Reaja: That\'s funny!' }] },
           { en: 'OK! See you tonight at eight!', pt: 'OK! Te vejo hoje à noite, às oito!', opts: [
             { en: 'See you there!', ok: true },

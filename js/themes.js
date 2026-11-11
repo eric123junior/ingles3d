@@ -1,4 +1,5 @@
-// Temas: o cenário, os bichinhos e as falas de cada módulo.
+// Temas: o cenário, os personagens e as falas de cada módulo.
+// Personagem com `look` é uma pessoa (js/people.js); sem `look` é um bichinho (species + color).
 // Os "papéis" são sempre os mesmos (greet, numbers, fruits, colors = professores das unidades 1 a 4;
 // arena, bakery, shop, mayor), só mudam o nome, a cara e o lugar. A voz é fixa por papel.
 
@@ -68,19 +69,19 @@ export const THEMES = {
     },
     houses: { greet: ['#e9fff6', '#86dcc0'], colors: ['#e7cfa6', '#9a6a46'], bakery: ['#f6ffe8', '#5fae55'] },
     people: {
-      greet: { name: 'Rosa', pt: 'a Rosa', species: 'bunny', color: '#f7efe4', emoji: '🐰', hat: 'flower' },
-      colors: { name: 'Cedar', pt: 'o Cedar', species: 'cat', color: '#9a6a46', emoji: '🐱', hat: 'cap' },
-      numbers: { name: 'Woody', pt: 'o Woody', species: 'panda', color: '#3d3a4b', emoji: '🐼', face: 'glasses' },
-      fruits: { name: 'Daisy', pt: 'a Daisy', species: 'fox', color: '#f58a3d', emoji: '🦊', hat: 'bow' },
-      arena: { name: 'Coach Sprout', pt: 'o Treinador Sprout', species: 'puppy', color: '#a8d98a', emoji: '🐶', hat: 'cap' },
-      bakery: { name: 'Mrs. Maple', pt: 'a Dona Maple', species: 'bear', color: '#d9a066', emoji: '🐻', neck: 'scarf' },
-      shop: { name: 'Lily', pt: 'a Lily', species: 'bunny', color: '#f4a9c4', emoji: '🐰', hat: 'party' },
-      mayor: { name: 'Mr. Park', pt: 'o Sr. Park', species: 'bear', color: '#a3acb9', emoji: '🐻', face: 'glasses', neck: 'bowtie' },
+      greet: { name: 'Rosa', pt: 'a Rosa', emoji: '👩‍🌾', look: { skin: '#f1c9a5', hair: '#7a3a22', hairStyle: 'ponytail', top: '#ff8fab', bottom: '#4a6fa5', extras: ['overalls', 'strawHat'] } },
+      colors: { name: 'Cedar', pt: 'o Cedar', emoji: '👷', look: { skin: '#d9a77f', hair: '#3a2418', hairStyle: 'short', beard: '#3a2418', top: '#ffb03b', bottom: '#4a5a3a', extras: ['helmet', 'harness'] } },
+      numbers: { name: 'Woody', pt: 'o Woody', emoji: '👨‍🌾', face: 'glasses', look: { skin: '#e8c09a', hair: '#5a3d2b', hairStyle: 'short', top: '#6b8f5a', bottom: '#7a5a3a', extras: ['apron'], apronColor: '#8a6248' } },
+      fruits: { name: 'Daisy', pt: 'a Daisy', emoji: '🌼', look: { skin: '#f3cfb0', hair: '#e3c27a', hairStyle: 'bun', top: '#ffd54d', bottom: '#5a7a4a', extras: ['apron'], apronColor: '#5fae55' } },
+      arena: { name: 'Coach Sprout', pt: 'o Treinador Sprout', emoji: '🏃', hat: 'cap', look: { skin: '#c98f6a', hair: '#2b1d17', hairStyle: 'short', top: '#7be0ad', bottom: '#3b3f4f' } },
+      bakery: { name: 'Mrs. Maple', pt: 'a Dona Maple', emoji: '👵', look: { skin: '#f1c9a5', hair: '#dedad2', hairStyle: 'bun', top: '#d9a066', bottom: '#7a5a3a', extras: ['apron'] } },
+      shop: { name: 'Lily', pt: 'a Lily', emoji: '👩', look: { skin: '#e8c09a', hair: '#2b1d17', hairStyle: 'long', top: '#f4a9c4', bottom: '#3b3f4f' } },
+      mayor: { name: 'Mr. Park', pt: 'o Sr. Park', emoji: '👨‍💼', face: 'glasses', look: { skin: '#f0cfa8', hair: '#2b2b2b', hairStyle: 'short', top: '#ffffff', bottom: '#3b3f4f', extras: ['jacket', 'tie'], jacket: '#4f6b4a', tieColor: '#5fae55' } },
     },
     wanderers: [
-      { id: 'Moss', name: 'Moss', species: 'puppy', color: '#8ec5ff', emoji: '🐶' },
-      { id: 'Fern', name: 'Fern', species: 'cat', color: '#bca6f2', emoji: '🐱' },
-      { id: 'Twig', name: 'Twig', species: 'bear', color: '#f5c27a', emoji: '🐻' },
+      { id: 'Moss', name: 'Moss', emoji: '👨‍🌾', look: { skin: '#d9a77f', hair: '#5a3d2b', hairStyle: 'short', top: '#a8d98a', bottom: '#4a6fa5', extras: ['overalls', 'strawHat'] } },
+      { id: 'Fern', name: 'Fern', emoji: '👩‍🌾', look: { skin: '#f6d4b6', hair: '#b5654a', hairStyle: 'curly', top: '#bca6f2', bottom: '#5a7a4a', extras: ['apron'], apronColor: '#a0714f' } },
+      { id: 'Twig', name: 'Twig', emoji: '👦', look: { skin: '#f1c9a5', hair: '#e3c27a', hairStyle: 'spiky', top: '#f5c27a', bottom: '#4a5a7a', scale: 0.88 } },
     ],
     smallTalk: [
       { en: 'Hello! Good morning!', pt: 'Olá! Bom dia!' },
@@ -105,45 +106,47 @@ export const THEMES = {
   // ====================== ELLEN: Rua do Café (turma de amigos) ======================
   ellen: {
     style: 'city',
-    welcome: 'Bem-vindo(a) à Coffee Street',
-    sky: '#cfe4ff', ground: '#b9c9a8', water: '#7cc4f0', sand: '#e9e1d2', grass: '#a6d88c', path: '#dcd6cf',
+    welcome: 'Bem-vindo(a) a Nova York',
+    sky: '#cfe4ff', ground: '#b4b8be', water: '#7cc4f0', sand: '#cfc8bc', grass: '#a9adb3', path: '#e6e0d6',
     signs: {
-      greet: ['THE APARTMENT', 'O Apartamento'], colors: ['THE STUDIO', 'O Estúdio'], numbers: ['GAME CORNER', 'Cantinho dos Jogos'],
-      fruits: ['STREET MARKET', 'Feirinha'], bakery: ['COZY CUP CAFÉ', 'Cafeteria'], shop: ['SHOP', 'Loja'],
+      greet: ["MONICA'S PLACE", 'Apartamento da Monica'], colors: ["JOEY'S STUDIO", 'Estúdio do Joey'], numbers: ['GAME CORNER', 'Cantinho dos Jogos'],
+      fruits: ['STREET MARKET', 'Feirinha'], bakery: ['CENTRAL PERK', 'Cafeteria'], shop: ['SHOP', 'Loja'],
       arena: ['WORD RUN', 'Corrida das Palavras'], gate: ['DOWNTOWN', '🔒 Em breve'],
     },
-    houses: { greet: ['#ffd9c2', '#b5654a'], colors: ['#e7e1ff', '#7a6ad8'], bakery: ['#fff0dd', '#7b4a2e'] },
+    houses: { greet: ['#c8775a', '#7a3f2e'], colors: ['#e7e1ff', '#7a6ad8'], bakery: ['#6b3f2a', '#2f5a40'] },
+    // personagens da série Friends (jogo de uso só da família)
     people: {
-      greet: { name: 'Mia', pt: 'a Mia', species: 'bunny', color: '#f4a9c4', emoji: '🐰', hat: 'bow' },
-      colors: { name: 'Leo', pt: 'o Leo', species: 'cat', color: '#f5a25d', emoji: '🐱', face: 'sunglasses' },
-      numbers: { name: 'Sam', pt: 'o Sam', species: 'panda', color: '#3d3a4b', emoji: '🐼', hat: 'cap' },
-      fruits: { name: 'Zoe', pt: 'a Zoe', species: 'fox', color: '#f58a3d', emoji: '🦊', hat: 'flower' },
-      arena: { name: 'Coach Rex', pt: 'o Treinador Rex', species: 'puppy', color: '#d9a066', emoji: '🐶', hat: 'cap' },
-      bakery: { name: 'Olive', pt: 'a Olive', species: 'bear', color: '#9a6a46', emoji: '🐻', neck: 'scarf' },
-      shop: { name: 'Gigi', pt: 'a Gigi', species: 'bunny', color: '#f7efe4', emoji: '🐰', hat: 'party' },
-      mayor: { name: 'Mr. Gray', pt: 'o Sr. Gray', species: 'bear', color: '#a3acb9', emoji: '🐻', face: 'glasses', neck: 'bowtie' },
+      greet: { name: 'Monica', pt: 'a Monica', emoji: '👩‍🍳', look: { skin: '#f3cfb0', hair: '#2b1d17', hairStyle: 'bob', top: '#8a5fb0', bottom: '#2f2a3a' } },
+      colors: { name: 'Joey', pt: 'o Joey', emoji: '🍕', look: { skin: '#e5b48e', hair: '#2b1d17', hairStyle: 'spiky', top: '#e9e4d8', bottom: '#3b4a6b', extras: ['jacket'], jacket: '#4a2f22' } },
+      numbers: { name: 'Chandler', pt: 'o Chandler', emoji: '👨‍💼', look: { skin: '#f1c9a5', hair: '#5a3d2b', hairStyle: 'short', top: '#ffffff', bottom: '#3b3f4f', extras: ['jacket', 'tie'], jacket: '#56657a', tieColor: '#2f4f7f' } },
+      fruits: { name: 'Rachel', pt: 'a Rachel', emoji: '👱‍♀️', look: { skin: '#f3cfb0', hair: '#c9a063', hairStyle: 'long', top: '#ffffff', bottom: '#2f2a3a', extras: ['apron'], apronColor: '#f2ead8' } },
+      arena: { name: 'Coach Ursula', pt: 'a Treinadora Ursula', emoji: '🏃‍♀️', look: { skin: '#f6d4b6', hair: '#e8cf8a', hairStyle: 'ponytail', top: '#ff6f91', bottom: '#3b3f4f' } },
+      bakery: { name: 'Gunther', pt: 'o Gunther', male: true, emoji: '☕', look: { skin: '#f3d3b8', hair: '#f8f3d6', hairStyle: 'short', top: '#ffffff', bottom: '#2f2a3a', extras: ['apron'], apronColor: '#2f5a40' } },
+      shop: { name: 'Janice', pt: 'a Janice', emoji: '💅', look: { skin: '#f1c9a5', hair: '#2b1d17', hairStyle: 'curly', top: '#c99a5a', bottom: '#2f2a3a' } },
+      mayor: { name: 'Mr. Treeger', pt: 'o Sr. Treeger', emoji: '🔧', look: { skin: '#e8b896', hair: '#6b5a4a', hairStyle: 'bald', top: '#ffffff', bottom: '#5a6a8a', extras: ['overalls'], scale: 1.12 } },
     },
     wanderers: [
-      { id: 'Ben', name: 'Ben', species: 'puppy', color: '#8ec5ff', emoji: '🐶' },
-      { id: 'Kate', name: 'Kate', species: 'cat', color: '#bca6f2', emoji: '🐱' },
-      { id: 'Duke', name: 'Duke', species: 'bear', color: '#f5c27a', emoji: '🐻' },
+      { id: 'Ross', name: 'Ross', emoji: '🦕', look: { skin: '#f1c9a5', hair: '#4a3020', hairStyle: 'short', top: '#8a5a3a', bottom: '#4a4a5a' } },
+      { id: 'Phoebe', name: 'Phoebe', emoji: '🎸', look: { skin: '#f6d4b6', hair: '#f0d58a', hairStyle: 'wavy', robe: '#b8a4ff', sash: '#ffd54d', extras: ['guitar'] } },
+      { id: 'Mike', name: 'Mike', emoji: '🎹', look: { skin: '#f1c9a5', hair: '#6b4a2a', hairStyle: 'short', top: '#5a7aa0', bottom: '#3b3f4f' } },
     ],
+    voices: { bakery: 'bm_fable', arena: 'af_kore' }, // o Gunther é homem; a Ursula é mulher
     smallTalk: [
       { en: "Hey! What's up?", pt: 'E aí! Tudo bem?' },
       { en: 'I need a coffee!', pt: 'Eu preciso de um café!' },
       { en: "Let's hang out later!", pt: 'Vamos sair mais tarde!' },
-      { en: 'I love this street.', pt: 'Eu amo esta rua.' },
-      { en: 'See you at the café!', pt: 'Te vejo na cafeteria!' },
+      { en: 'I love New York!', pt: 'Eu amo Nova York!' },
+      { en: 'See you at Central Perk!', pt: 'Te vejo no Central Perk!' },
       { en: 'What a day!', pt: 'Que dia!' },
     ],
     idTitle: { en: 'Neighbor Card', pt: 'Cartão de Vizinho' },
     gate: { icon: '🏙️', en: 'Downtown', line: { en: 'Downtown is closed... for now!', pt: 'O Centro da cidade está fechado... por enquanto!' } },
-    mayorHi: { en: 'Hello! Welcome to Coffee Street! I am the building manager.', pt: 'Olá! Bem-vindo(a) à Coffee Street! Eu sou o síndico do prédio.' },
+    mayorHi: { en: "Hello! Welcome to the building! I'm the super.", pt: 'Olá! Bem-vindo(a) ao prédio! Eu sou o zelador.' },
     job: {
       icon: '🥤',
-      locked1: { en: 'Hello, dear! I need fruits for my smoothies...', pt: 'Olá, querido(a)! Eu preciso de frutas para as minhas vitaminas...' },
+      locked1: { en: 'Hello there! I need fruits for my smoothies...', pt: 'Olá! Eu preciso de frutas para as minhas vitaminas...' },
       hello: { en: 'Hello, {name}! I want to make a smoothie.', pt: 'Olá, {name}! Eu quero fazer uma vitamina de frutas.' },
-      where: { en: 'The fruits are at the Street Market. Thank you!', pt: 'As frutas estão no Street Market (Feirinha). Obrigada!' },
+      where: { en: 'The fruits are at the Street Market. Thank you!', pt: 'As frutas estão no Street Market (Feirinha). Obrigado!' },
       pay: { en: 'Here is your smoothie... and 40 coins for you!', pt: 'Aqui está sua vitamina... e 40 moedas para você!' },
     },
   },
@@ -152,7 +155,7 @@ export const THEMES = {
   carla: {
     style: 'bible',
     welcome: 'Bem-vindo(a) à Vila da Paz',
-    sky: '#ffe9c2', ground: '#d9c38a', water: '#6ec6e4', sand: '#f1d79c', grass: '#cbd486', path: '#ecd3a2',
+    sky: '#ffe9c2', ground: '#e0c98f', water: '#6ec6e4', sand: '#f1d79c', grass: '#e2cf94', path: '#f2dfb4',
     signs: {
       greet: ['THE CHAPEL', 'Capela'], colors: ['STORY TENT', 'Tenda das Histórias'], numbers: ['THE WELL', 'Praça do Poço'],
       fruits: ['FRUIT GARDEN', 'Jardim das Frutas'], bakery: ['BREAD HOUSE', 'Casa do Pão'], shop: ['MARKET', 'Mercado'],
@@ -160,19 +163,19 @@ export const THEMES = {
     },
     houses: { greet: ['#fff8ea', '#c98a5a'], colors: ['#f6e2c0', '#b0563c'], bakery: ['#f6e6c6', '#c79a63'] },
     people: {
-      greet: { name: 'Sister Grace', pt: 'a Irmã Grace', species: 'bunny', color: '#f7efe4', emoji: '🐰', neck: 'scarf' },
-      colors: { name: 'Brother Sam', pt: 'o Irmão Sam', species: 'cat', color: '#f5a25d', emoji: '🐱', face: 'glasses' },
-      numbers: { name: 'Teacher Eli', pt: 'o Professor Eli', species: 'panda', color: '#3d3a4b', emoji: '🐼', neck: 'bowtie' },
-      fruits: { name: 'Miss Ruth', pt: 'a Dona Ruth', species: 'fox', color: '#f58a3d', emoji: '🦊', hat: 'flower' },
-      arena: { name: 'Coach Caleb', pt: 'o Treinador Caleb', species: 'puppy', color: '#d9a066', emoji: '🐶', hat: 'cap' },
-      bakery: { name: 'Grandma Anna', pt: 'a Vovó Anna', species: 'bear', color: '#9a6a46', emoji: '🐻', face: 'glasses', neck: 'scarf' },
-      shop: { name: 'Lydia', pt: 'a Lydia', species: 'bunny', color: '#bca6f2', emoji: '🐰', hat: 'bow' },
-      mayor: { name: 'Elder Abe', pt: 'o Ancião Abe', species: 'bear', color: '#a3acb9', emoji: '🐻', neck: 'scarf' },
+      greet: { name: 'Miriam', pt: 'a Miriam', emoji: '🧕', look: { skin: '#d9a77f', hair: '#3a2418', head: 'veil', headColor: '#e9dcc4', robe: '#5b8fc9', sash: '#e9c46a' } },
+      colors: { name: 'Samuel', pt: 'o Samuel', emoji: '🧔', look: { skin: '#d4a07a', hair: '#3a2418', hairStyle: 'short', beard: '#3a2418', robe: '#efe4cc', sash: '#6b8f5a' } },
+      numbers: { name: 'Teacher Eli', pt: 'o Professor Eli', emoji: '👴', look: { skin: '#d9a77f', hair: '#e8e4dc', head: 'headcloth', headColor: '#f3ead8', band: '#6b4a36', beard: '#efeae2', robe: '#8a6a9a', sash: '#c9a063' } },
+      fruits: { name: 'Miss Ruth', pt: 'a Dona Ruth', emoji: '👩‍🌾', look: { skin: '#e0b08a', hair: '#5a3a22', head: 'veil', headColor: '#f6e3b4', robe: '#c8553d', sash: '#f0d58a' } },
+      arena: { name: 'Coach Caleb', pt: 'o Treinador Caleb', emoji: '💪', look: { skin: '#c98f6a', hair: '#2b1d17', hairStyle: 'curly', beard: '#2b1d17', robe: '#b0563c', sash: '#e9c46a' } },
+      bakery: { name: 'Grandma Anna', pt: 'a Vovó Anna', emoji: '👵', look: { skin: '#e0b08a', hair: '#d8d4cc', head: 'veil', headColor: '#d9c3e8', robe: '#7a5a9a', extras: ['apron'], apronColor: '#f6eedc' } },
+      shop: { name: 'Lydia', pt: 'a Lydia', emoji: '🧕', look: { skin: '#e8c09a', hair: '#2b1d17', head: 'veil', headColor: '#9b4fbf', robe: '#7a3a9a', sash: '#ffd54d' } },
+      mayor: { name: 'Abraham', pt: 'o Abraão', emoji: '👴', look: { skin: '#d4a07a', hair: '#f1ede6', head: 'headcloth', headColor: '#ffffff', band: '#8a6248', beard: '#f1ede6', robe: '#a0714f', sash: '#e9c46a', extras: ['staff'] } },
     },
     wanderers: [
-      { id: 'Levi', name: 'Levi', species: 'puppy', color: '#8ec5ff', emoji: '🐶' },
-      { id: 'Hannah', name: 'Hannah', species: 'cat', color: '#f4a9c4', emoji: '🐱' },
-      { id: 'Joel', name: 'Joel', species: 'bear', color: '#f5c27a', emoji: '🐻' },
+      { id: 'Levi', name: 'Levi', emoji: '👦', look: { skin: '#c98f6a', hair: '#2b1d17', hairStyle: 'short', robe: '#6b8f5a', sash: '#c9a063', extras: ['staff'] } },
+      { id: 'Hannah', name: 'Hannah', emoji: '👩', look: { skin: '#e8c09a', hair: '#3a2418', head: 'veil', headColor: '#f4a9c4', robe: '#efe4cc', sash: '#c8553d' } },
+      { id: 'Joel', name: 'Joel', emoji: '👨', look: { skin: '#d4a07a', hair: '#4a3020', head: 'headcloth', headColor: '#e9dcc4', band: '#5a4636', beard: '#4a3020', robe: '#5b8fc9', sash: '#a0714f' } },
     ],
     smallTalk: [
       { en: 'Hello! God bless you!', pt: 'Olá! Deus te abençoe!' },
@@ -197,7 +200,7 @@ export const THEMES = {
 
 // vozes de cada bichinho do tema: papel fixo + os três que passeiam
 export function voicesFor(theme) {
-  const v = { narrator: NARRATOR, ...ROLE_VOICE };
+  const v = { narrator: NARRATOR, ...ROLE_VOICE, ...(theme.voices || {}) };
   theme.wanderers.forEach((w, i) => { v[w.id] = WANDER_VOICE[i]; });
   return v;
 }

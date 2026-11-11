@@ -17,7 +17,7 @@ export const UNITS = [
     id: 'u1', npc: 'greet', icon: '👋',
     title: { en: 'Hello and blessings', pt: 'Olá! Cumprimentos e bênçãos' },
     cando: 'Consigo cumprimentar, me apresentar, perguntar como a pessoa está e desejar uma bênção.',
-    intro: { en: "Hello! Peace be with you! I'm Sister Grace. Let's learn to say hello. Then I tell you a story about God!", pt: 'Olá! A paz esteja com você! Eu sou a Irmã Grace. Vamos aprender a cumprimentar. Depois eu conto uma história sobre Deus!' },
+    intro: { en: "Hello! Peace be with you! I'm Miriam. Let's learn to say hello. Then I tell you a story about God!", pt: 'Olá! A paz esteja com você! Eu sou a Miriam. Vamos aprender a cumprimentar. Depois eu conto uma história sobre Deus!' },
     stages: [
       st('u1', 'greet'),
       st('u1', 'intro'),
@@ -67,7 +67,7 @@ export const UNITS = [
       },
       {
         id: 'story', type: 'listen', story: true, title: { en: 'Story: God makes the world', pt: 'História: Deus faz o mundo (a Criação)' },
-        scene: { en: 'Sister Grace tells the first story of the Bible.', pt: 'A Irmã Grace conta a primeira história da Bíblia.' },
+        scene: { en: 'Miriam tells the first story of the Bible.', pt: 'A Miriam conta a primeira história da Bíblia.' },
         lines: [
           { who: 'greet', en: 'In the beginning, there is no light. Everything is dark.', pt: 'No princípio, não há luz. Tudo é escuro.' },
           { who: 'greet', en: 'God says, "Light!" And there is light.', pt: 'Deus diz: "Luz!" E a luz aparece.' },
@@ -89,20 +89,20 @@ export const UNITS = [
         ],
       },
       {
-        id: 'talk', type: 'talk', partner: 'greet', title: { en: 'Conversation', pt: 'Conversa com a Irmã Grace' },
-        scene: { en: 'You meet Sister Grace at the chapel.', pt: 'Você encontra a Irmã Grace na capela. Escolha a melhor resposta.' },
+        id: 'talk', type: 'talk', partner: 'greet', title: { en: 'Conversation', pt: 'Conversa com a Miriam' },
+        scene: { en: 'You meet Miriam at the chapel.', pt: 'Você encontra a Miriam na capela. Escolha a melhor resposta.' },
         turns: [
-          { en: "Good morning! Peace be with you! I'm Sister Grace.", pt: 'Bom dia! A paz esteja com você! Eu sou a Irmã Grace.', opts: [
+          { en: "Good morning! Peace be with you! I'm Miriam.", pt: 'Bom dia! A paz esteja com você! Eu sou a Miriam.', opts: [
             { en: "Good morning! I'm {name}.", ok: true },
             { en: "Good night! I'm {name}.", why: '"Good night" é despedida (boa noite ao sair). De manhã: Good morning!' },
-            { en: "Good morning! I'm Grace.", why: 'Grace é ela! Diga o SEU nome.' }] },
+            { en: "Good morning! I'm Miriam.", why: 'Miriam é ela! Diga o SEU nome.' }] },
           { en: 'Nice to meet you, {name}! How are you today?', pt: 'Prazer em te conhecer! Como você está hoje?', opts: [
             { en: "Nice to meet you too. I'm fine, thank God!", ok: true },
             { en: "Nice to meet you too. I'm fine, thanks. And you?", ok: true },
             { en: "I'm {name}.", why: 'Você já disse o nome. Ela perguntou como você está: I\'m fine.' }] },
           { en: "I'm very well, thank God. Welcome to our village!", pt: 'Estou muito bem, graças a Deus. Bem-vindo(a) à nossa vila!', opts: [
             { en: 'Thank you!', ok: true },
-            { en: 'Thank you, Sister Grace!', ok: true },
+            { en: 'Thank you, Miriam!', ok: true },
             { en: 'Please!', why: '"Please" é por favor. Para agradecer: Thank you!' }] },
           { en: 'Look at the sky! What a beautiful day!', pt: 'Olhe o céu! Que dia lindo!', opts: [
             { en: 'Yes! Thank God!', ok: true },
@@ -121,7 +121,7 @@ export const UNITS = [
       {
         id: 'meet', type: 'mission', at: ['Levi', 'Hannah', 'Joel'],
         title: { en: 'Mission: meet the village', pt: 'Missão: conheça a vila' },
-        desc: 'Converse com os 3 moradores que passeiam pela vila: Levi 🐶, Hannah 🐱 e Joel 🐻.',
+        desc: 'Converse com os 3 moradores que passeiam pela vila: Levi 👦, Hannah 👩 e Joel 👨.',
         talks: {
           Levi: [
             { en: "Hello! God bless you! I'm Levi. What's your name?", pt: 'Olá! Deus te abençoe! Eu sou o Levi. Qual é o seu nome?', opts: [
@@ -329,12 +329,12 @@ export const UNITS = [
       {
         id: 'idcard', type: 'mission', at: 'mayor',
         title: { en: 'Mission: your village card', pt: 'Missão: seu cartão da vila' },
-        desc: 'Vá até o Ancião Abe 🐻 na praça central e responda as perguntas para fazer o seu cartão da vila.',
+        desc: 'Vá até o Abraão 👴 na praça central e responda as perguntas para fazer o seu cartão da vila.',
         talk: [
-          { en: "Peace be with you! I'm Elder Abe. I need some information for your village card.", pt: 'A paz esteja com você! Eu sou o Ancião Abe. Preciso de algumas informações para o seu cartão da vila.', opts: [
+          { en: "Peace be with you! I'm Abraham. I need some information for your village card.", pt: 'A paz esteja com você! Eu sou o Abraão. Preciso de algumas informações para o seu cartão da vila.', opts: [
             { en: 'OK, no problem.', ok: true }, { en: "No, I'm fine.", why: '"I\'m fine" é "estou bem". Diga: OK, no problem.' }, { en: 'Good night!', why: 'Ele quer fazer o seu cartão. Diga: OK, no problem.' }] },
           { en: "What's your name?", pt: 'Qual é o seu nome?', opts: [
-            { en: 'My name is {name}.', ok: true }, { en: 'Your name is Abe.', why: 'Diga o SEU nome: My name is...' }, { en: "I'm from {name}.", why: '"From" é para lugar. Diga: My name is...' }] },
+            { en: 'My name is {name}.', ok: true }, { en: 'Your name is Abraham.', why: 'Diga o SEU nome: My name is...' }, { en: "I'm from {name}.", why: '"From" é para lugar. Diga: My name is...' }] },
           { en: 'Where are you from?', pt: 'De onde você é?', opts: [
             { en: "I'm from Brazil.", ok: true, save: ['from', 'Brazil'] },
             { en: "I'm from Portugal.", ok: true, save: ['from', 'Portugal'] },
@@ -530,7 +530,7 @@ export const UNITS = [
       {
         id: 'bread', type: 'mission', at: 'bakery',
         title: { en: 'Mission: bread for everyone', pt: 'Missão: pão para todos' },
-        desc: 'Vá até a Vovó Anna 🐻 na BREAD HOUSE e busque comida para dividir com a vila.',
+        desc: 'Vá até a Vovó Anna 👵 na BREAD HOUSE e busque comida para dividir com a vila.',
         talk: [
           { en: 'Hello, dear! Welcome to the Bread House. Are you hungry?', pt: 'Olá, querido(a)! Bem-vindo(a) à Casa do Pão. Está com fome?', opts: [
             { en: "Yes, I'm hungry!", ok: true },
@@ -573,7 +573,7 @@ export const UNITS = [
     id: 'u4', npc: 'colors', icon: '👑',
     title: { en: 'People', pt: 'Como as pessoas são — Davi e Golias' },
     cando: 'Consigo descrever pessoas, dizer o que alguém tem e o que eu consigo (ou não consigo) fazer — e contar uma história simples.',
-    intro: { en: "Hello, friend! I'm Brother Sam. Let's learn to describe people. Today's story has a giant!", pt: 'Olá, amigo(a)! Eu sou o Irmão Sam. Vamos aprender a descrever pessoas. A história de hoje tem um gigante!' },
+    intro: { en: "Hello, friend! I'm Samuel. Let's learn to describe people. Today's story has a giant!", pt: 'Olá, amigo(a)! Eu sou o Samuel. Vamos aprender a descrever pessoas. A história de hoje tem um gigante!' },
     stages: [
       {
         id: 'adj', type: 'words', title: { en: 'How people are', pt: 'Como as pessoas são' },
@@ -697,7 +697,7 @@ export const UNITS = [
       },
       {
         id: 'story', type: 'listen', story: true, title: { en: 'Story: David and Goliath', pt: 'História: Davi e Golias' },
-        scene: { en: 'Brother Sam tells the story of a brave boy.', pt: 'O Irmão Sam conta a história de um menino corajoso.' },
+        scene: { en: 'Samuel tells the story of a brave boy.', pt: 'O Samuel conta a história de um menino corajoso.' },
         lines: [
           { who: 'colors', en: 'David is a young shepherd. He takes care of sheep.', pt: 'Davi é um jovem pastor. Ele cuida de ovelhas.' },
           { who: 'colors', en: 'He is small, but he is brave. He loves God.', pt: 'Ele é pequeno, mas é corajoso. Ele ama a Deus.' },
@@ -721,8 +721,8 @@ export const UNITS = [
         ],
       },
       {
-        id: 'talk', type: 'talk', partner: 'colors', title: { en: 'Conversation', pt: 'Conversa com o Irmão Sam' },
-        scene: { en: 'Brother Sam talks with you about the story.', pt: 'O Irmão Sam conversa com você sobre a história.' },
+        id: 'talk', type: 'talk', partner: 'colors', title: { en: 'Conversation', pt: 'Conversa com o Samuel' },
+        scene: { en: 'Samuel talks with you about the story.', pt: 'O Samuel conversa com você sobre a história.' },
         turns: [
           { en: 'Hello, {name}! Welcome to the Story Tent. Is David tall?', pt: 'Olá! Bem-vindo(a) à Tenda das Histórias. O Davi é alto?', opts: [
             { en: "No, he isn't. He is small.", ok: true },
@@ -749,7 +749,7 @@ export const UNITS = [
             { en: 'Yes, I can. I love this story.', ok: true },
             { en: 'Yes, I am.', why: 'Pergunta com CAN → Yes, I CAN.' }] },
           { en: "Don't be afraid, {name}. You can do it! God bless you!", pt: 'Não tenha medo. Você consegue! Deus te abençoe!', opts: [
-            { en: 'Thank you, Brother Sam! God bless you too!', ok: true },
+            { en: 'Thank you, Samuel! God bless you too!', ok: true },
             { en: 'Amen! I can do it!', ok: true },
             { en: "I can't do it.", why: 'Não desanime 😄. Diga: I can do it!' }] },
         ],
@@ -757,7 +757,7 @@ export const UNITS = [
       {
         id: 'retell', type: 'mission', at: 'colors',
         title: { en: 'Mission: tell the story', pt: 'Missão: conte a história' },
-        desc: 'Volte ao Irmão Sam 🐱 na STORY TENT. Os amigos da vila querem ouvir a história de Davi — conte você, em inglês!',
+        desc: 'Volte ao Samuel 🧔 na STORY TENT. Os amigos da vila querem ouvir a história de Davi — conte você, em inglês!',
         talk: [
           { en: '{name}, our friends want to hear the story of David. Can you tell the story?', pt: 'Os nossos amigos querem ouvir a história de Davi. Você consegue contar?', opts: [
             { en: 'Yes, I can!', ok: true },

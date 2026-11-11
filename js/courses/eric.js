@@ -68,7 +68,7 @@ export const UNITS = [
       {
         id: 'meet', type: 'mission', at: ['Moss', 'Fern', 'Twig'],
         title: { en: 'Mission: meet the gardeners', pt: 'Missão: conheça os jardineiros' },
-        desc: 'Converse com os 3 jardineiros que passeiam pelo jardim: Moss 🐶, Fern 🐱 e Twig 🐻.',
+        desc: 'Converse com os 3 jardineiros que passeiam pelo jardim: Moss 👨‍🌾, Fern 👩‍🌾 e Twig 👦.',
         talks: {
           Moss: [
             { en: 'Hey! Good morning!', pt: 'Ei! Bom dia!', opts: [
@@ -245,7 +245,7 @@ export const UNITS = [
       {
         id: 'idcard', type: 'mission', at: 'mayor',
         title: { en: 'Mission: your work badge', pt: 'Missão: seu crachá de trabalho' },
-        desc: 'Vá até o Sr. Park 🐻 na praça central e responda as perguntas para fazer o seu crachá de trabalho.',
+        desc: 'Vá até o Sr. Park 👨‍💼 na praça central e responda as perguntas para fazer o seu crachá de trabalho.',
         talk: [
           { en: 'Good morning! Welcome to the Botanical Garden. I need some information for your work badge.', pt: 'Bom dia! Bem-vindo(a) ao Jardim Botânico. Preciso de algumas informações para o seu crachá.', opts: [
             { en: 'OK, no problem.', ok: true }, { en: "No, I'm fine.", why: '"I\'m fine" é "estou bem". Diga: OK, no problem.' }, { en: 'Good night!', why: 'Ele disse bom dia. Diga: OK, no problem.' }] },
@@ -457,7 +457,7 @@ export const UNITS = [
       {
         id: 'shop', type: 'mission', at: 'bakery',
         title: { en: 'Mission: buy your tools', pt: 'Missão: compre suas ferramentas' },
-        desc: 'Vá até a Sra. Maple 🐻 no GARDEN CENTER e compre o que você precisa para trabalhar.',
+        desc: 'Vá até a Sra. Maple 👵 no GARDEN CENTER e compre o que você precisa para trabalhar.',
         talk: [
           { en: 'Good afternoon, {name}! Can I help you?', pt: 'Boa tarde! Posso ajudar?', opts: [
             { en: "Yes, please. I'm looking for a shovel.", ok: true },
@@ -694,7 +694,7 @@ export const UNITS = [
       {
         id: 'client', type: 'mission', at: 'mayor',
         title: { en: 'Mission: your first client', pt: 'Missão: seu primeiro cliente' },
-        desc: 'O Sr. Park 🐻, na praça central, tem um serviço para você. Combine tudo com ele em inglês!',
+        desc: 'O Sr. Park 👨‍💼, na praça central, tem um serviço para você. Combine tudo com ele em inglês!',
         talk: [
           { en: 'Hello, {name}! I have a job for you. Do you have a minute?', pt: 'Olá! Tenho um serviço para você. Você tem um minuto?', opts: [
             { en: 'Sure! How can I help you?', ok: true },

@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { buildWorld } from './world.js';
 import { makeAnimal, dressAnimal, makeLabel, makeIcon, makeFruit, toon, CONE } from './models.js';
+import { makePerson } from './people.js';
 import { Controls, PlayerMover, isTouch } from './player.js';
 import { S, save, resetSave, levelInfo, support, touchDay, shownStreak } from './state.js';
 import {
@@ -62,7 +63,7 @@ buildPlayer();
 
 const speciesOf = id => SPECIES.find(s => s.id === id) || SPECIES[0];
 
-// ---------- Bichinhos do cenário (vêm do tema do jogador) ----------
+// ---------- Personagens do cenário (vêm do tema do jogador: bichinhos ou pessoas) ----------
 const NPC_DEFS = Object.entries(THEME.people).map(([id, p]) => ({ id, ...p }));
 const WANDER_DEFS = THEME.wanderers;
 // troca {name} pelo nome do jogador nas falas do tema
@@ -70,7 +71,7 @@ const tx = o => ({ en: o.en.replace('{name}', S.name), pt: o.pt.replace('{name}'
 
 const npcs = [];
 function addNpc(def, pos, wander) {
-  const anim = makeAnimal(def.species, def.color);
+  const anim = def.look ? makePerson(def.look) : makeAnimal(def.species, def.color);
   dressAnimal(anim, { hat: def.hat || null, face: def.face || null, neck: def.neck || null }, ACCESSORIES);
   anim.root.position.copy(pos);
   scene.add(anim.root);
@@ -567,7 +568,7 @@ async function talkBakery(n) {
   if (ok) {
     const reward = 40;
     await dialog({ name: n.name, voice: n.voice, lines: [
-      { en: LINES.bakeryYes(o), pt: `Isso! ${orderPt(o).replace(/^./, c => c.toUpperCase())}! Muito obrigada!` },
+      { en: LINES.bakeryYes(o), pt: `Isso! ${orderPt(o).replace(/^./, c => c.toUpperCase())}! ${THEME.people.bakery.male ? 'Muito obrigado!' : 'Muito obrigada!'}` },
       THEME.job.pay,
     ] });
     S.order = null; S.missions++;
@@ -913,4 +914,4 @@ addEventListener('pagehide', save);
 addEventListener('visibilitychange', () => { if (document.hidden) { save(); stopSpeaking(); } });
 
 // para testes no console
-window.__game = { S, mover, npcs, world, grant, wordRun, UNITS, THEME, startReview, playStage, npcById, get mode() { return mode; } };
+window.__game = { S, mover, controls, npcs, world, grant, wordRun, UNITS, THEME, startReview, playStage, npcById, get mode() { return mode; } };
